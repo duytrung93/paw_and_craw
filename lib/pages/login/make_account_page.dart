@@ -6,11 +6,13 @@ import 'package:gif/gif.dart';
 import 'package:paw_and_craw/components/form/action_button.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
+import 'package:paw_and_craw/functions/local_storage.dart';
 import 'package:paw_and_craw/objects/user.dart';
 import 'package:paw_and_craw/pages/login/choose_animal_page.dart';
 
 class MakeAccountPage extends StatefulWidget {
-  const MakeAccountPage({super.key});
+  final UserType type;
+  const MakeAccountPage({super.key, required this.type});
 
   @override
   State<MakeAccountPage> createState() => _MakeAccountPageState();
@@ -20,12 +22,13 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
   TextEditingController txtName = TextEditingController(text: '');
 
   late UserController userController;
+  String error = '';
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    userController = UserController(User());
+    userController = UserController(User(userType: widget.type));
     Get.put(userController);
     // showInput(context);
   }
@@ -138,7 +141,11 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
             child: Column(
               children: [
                 Text(
-                  'PLAY WITHOUT ACCOUNT!',
+                  widget.type == UserType.playWithoutAccount
+                      ? 'PLAY WITHOUT ACCOUNT!'
+                      : widget.type == UserType.newAccount
+                          ? 'MAKE NEW ACCOUNT'
+                          : '',
                   style: TextStyle(
                       fontFamily: 'Bungee',
                       color: Color(0xffffbd59),
@@ -147,7 +154,9 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
                 ),
                 SizedBox(height: 40),
                 Text(
-                  'Choose your name'.toUpperCase(),
+                  widget.type == UserType.loginAccount
+                      ? 'LOGIN YOUR ACCOUNT'
+                      : 'Choose your name'.toUpperCase(),
                   style: TextStyle(
                     fontFamily: 'lazy_dog',
                     color: Color(0xfff4ca44),
@@ -206,6 +215,7 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
                                   if (txtName.text.isEmpty) {
                                     return "Please input your name";
                                   }
+                                  if (error.isNotEmpty) return error;
                                   return null;
                                 },
                                 decoration: InputDecoration(
@@ -242,8 +252,48 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
                 ),
                 ActionButton(
                   action: () {
+                    error = "";
                     if (_formKey.currentState!.validate()) {
-                      Global.to(ChooseAnimalPage());
+                      switch (widget.type) {
+                        case UserType.newAccount:
+                          LocalStorage.getUser(userController.data.value.name)
+                              .then((value) {
+                            if (value != null) {
+                              error = "This name is already registered";
+                              _formKey.currentState!.validate();
+                            } else {
+                              Global.to(ChooseAnimalPage());
+                            }
+                          });
+                          break;
+                        case UserType.loginAccount:
+                          LocalStorage.getUser(userController.data.value.name)
+                              .then((value) {
+                            if (value == null) {
+                              error = "Name does not exist";
+                              _formKey.currentState!.validate();
+                            } else {
+                              LocalStorage.setCurrentUser(
+                                      userController.data.value.name)
+                                  .then((value) {
+                                Get.offAllNamed('/');
+                              });
+                            }
+                          });
+                          break;
+
+                        case UserType.playWithoutAccount:
+                          LocalStorage.getUser(userController.data.value.name)
+                              .then((value) {
+                            if (value != null) {
+                              error = "This name is already registered";
+                              _formKey.currentState!.validate();
+                            } else {
+                              Global.to(ChooseAnimalPage());
+                            }
+                          });
+                          break;
+                      }
                     }
                   },
                   child: Text(

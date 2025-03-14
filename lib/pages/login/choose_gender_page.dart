@@ -143,12 +143,16 @@ class _ChooseGenderPageState extends State<ChooseGenderPage> {
     user.update(
       (val) {
         val?.gender = i;
+        if (val?.userType != UserType.playWithoutAccount) {
+          val?.userType = UserType.loginAccount;
+        }
       },
     );
-    LocalStorage.setLogin(user.value).then(
-      (value) {
-        Get.offAllNamed('/');
-      },
-    );
+    Future.wait([
+      LocalStorage.setUser(user.value),
+      LocalStorage.setCurrentUser(user.value.name ?? '')
+    ]).then((value) {
+      Get.offAllNamed('/');
+    });
   }
 }

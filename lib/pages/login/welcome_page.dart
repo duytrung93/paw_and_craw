@@ -5,6 +5,7 @@ import 'package:gif/gif.dart';
 import 'package:paw_and_craw/components/form/action_button.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
+import 'package:paw_and_craw/objects/user.dart';
 import 'package:paw_and_craw/pages/login/make_account_page.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -164,10 +165,11 @@ class _WelcomePageState extends State<WelcomePage>
                 ),
               ),
               SizedBox(height: 10),
-
               ActionButton(
                 action: () {
-                  Global.to(MakeAccountPage());
+                  Global.to(MakeAccountPage(
+                    type: UserType.newAccount,
+                  ));
                 },
                 child: Text(
                   'Make new a account'.toUpperCase(),
@@ -179,10 +181,11 @@ class _WelcomePageState extends State<WelcomePage>
                       ),
                 ),
               ),
-
               ActionButton(
                 action: () {
-                  Global.to(MakeAccountPage());
+                  Global.to(MakeAccountPage(
+                    type: UserType.loginAccount,
+                  ));
                 },
                 child: Text(
                   'Log in',
@@ -194,7 +197,9 @@ class _WelcomePageState extends State<WelcomePage>
               ),
               ActionButton(
                 action: () {
-                  Global.to(MakeAccountPage());
+                  Global.to(MakeAccountPage(
+                    type: UserType.playWithoutAccount,
+                  ));
                 },
                 child: Text(
                   'Play with out account',
