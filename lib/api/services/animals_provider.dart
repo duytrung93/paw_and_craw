@@ -3,6 +3,7 @@ import 'package:paw_and_craw/functions/get_data_api.dart';
 import 'package:paw_and_craw/objects/data_animal.dart';
 import 'package:paw_and_craw/objects/pet_add.dart';
 import 'package:paw_and_craw/objects/pets/my_pets.dart';
+import 'package:paw_and_craw/objects/pets/pet_accessory.dart';
 import 'package:paw_and_craw/objects/user.dart';
 import 'package:paw_and_craw/objects/users/users_register.dart';
 
@@ -14,6 +15,17 @@ class AnimalsProvider {
       formatter: (json) =>
           (json as List).map((e) => DataAnimal.fromJson(e)).toList(),
     ).call().then(
+          (value) => value ?? [],
+        );
+  }
+
+  Future<List<PetAccessory>> accessory({required PetAccessory value}) {
+    return GetDataAPI(
+      method: GetDataAPIMethod.post,
+      uri: api('animals/accessory'),
+      formatter: (json) =>
+          (json as List).map((e) => PetAccessory.fromJson(e)).toList(),
+    ).call(params: value.toJson()).then(
           (value) => value ?? [],
         );
   }

@@ -15,6 +15,7 @@ import 'package:paw_and_craw/pages/donate/donate_page.dart';
 import 'package:paw_and_craw/pages/email/email_start_page.dart';
 import 'package:paw_and_craw/pages/follow_animals/follow_video_list_page.dart';
 import 'package:paw_and_craw/pages/quiz/quiz_start_page.dart';
+import 'package:paw_and_craw/pages/shop/shop_config_page.dart';
 import 'package:paw_and_craw/pages/shop/shop_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -97,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Global.to(ShopPage());
+                    Global.to(ShopConfigPage());
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

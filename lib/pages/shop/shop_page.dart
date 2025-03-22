@@ -21,17 +21,17 @@ class _ShopPageState extends State<ShopPage> {
   Rx<int?> selectedItem = Rx<int?>(null);
 
   List<PetAccessory> access = [
-    PetAccessory(name: 'glass_1.png', width: 100),
-    PetAccessory(name: 'glass_2.png', width: 100),
-    PetAccessory(name: 'hairclip_1.png', width: 100),
-    PetAccessory(name: 'hairclip_2.png', width: 100),
-    PetAccessory(name: 'hairclip_3.png', width: 100),
-    PetAccessory(name: 'hairclip_4.png', width: 100),
-    PetAccessory(name: 'hairclip_5.png', width: 100),
-    PetAccessory(name: 'hairclip_6.png', width: 100),
-    PetAccessory(name: 'hairclip_7.png', width: 100),
-    PetAccessory(name: 'neck_1.png', width: 100),
-    PetAccessory(name: 'neck_2.png', width: 100),
+    PetAccessory(accessory_id: 'glass_1.png', width: 100),
+    PetAccessory(accessory_id: 'glass_2.png', width: 100),
+    PetAccessory(accessory_id: 'hairclip_1.png', width: 100),
+    PetAccessory(accessory_id: 'hairclip_2.png', width: 100),
+    PetAccessory(accessory_id: 'hairclip_3.png', width: 100),
+    PetAccessory(accessory_id: 'hairclip_4.png', width: 100),
+    PetAccessory(accessory_id: 'hairclip_5.png', width: 100),
+    PetAccessory(accessory_id: 'hairclip_6.png', width: 100),
+    PetAccessory(accessory_id: 'hairclip_7.png', width: 100),
+    PetAccessory(accessory_id: 'neck_1.png', width: 100),
+    PetAccessory(accessory_id: 'neck_2.png', width: 100),
   ];
 
   @override
@@ -104,7 +104,7 @@ class _ShopPageState extends State<ShopPage> {
                                               ? 0.5
                                               : 1,
                                       child: Image.asset(
-                                        'assets/v2_images/${access[index].name}',
+                                        'assets/v2_images/${access[index].accessory_id}',
                                       ),
                                     ),
                                   ),
@@ -133,8 +133,8 @@ class _ShopPageState extends State<ShopPage> {
                             if (selectedItem.value != null) {
                               selected.update((val) {
                                 var find = val?.firstWhereOrNull((element) =>
-                                    element.name ==
-                                    access[selectedItem.value!].name);
+                                    element.accessory_id ==
+                                    access[selectedItem.value!].accessory_id);
                                 if (find != null) {
                                   find.width = value;
                                 }
@@ -184,12 +184,12 @@ class _ShopPageState extends State<ShopPage> {
     items.addAll(selected.value
         .map(
           (data) => FixedImage(
-            key: Key(data.name ?? ''),
+            key: Key(data.accessory_id ?? ''),
             top: 0,
             left: 0,
             dragable: true,
             child: Image.asset(
-              'assets/v2_images/${data.name}',
+              'assets/v2_images/${data.accessory_id}',
               width: data.width,
             ),
           ),

@@ -18,7 +18,11 @@ DataAnimal _$DataAnimalFromJson(Map<String, dynamic> json) => DataAnimal(
               ?.map((e) => e as String)
               .toList() ??
           const [],
-    )..accessories = json['accessories'];
+      accessories: (json['accessories'] as List<dynamic>?)
+              ?.map((e) => PetAccessory.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+    );
 
 Map<String, dynamic> _$DataAnimalToJson(DataAnimal instance) =>
     <String, dynamic>{
@@ -27,7 +31,7 @@ Map<String, dynamic> _$DataAnimalToJson(DataAnimal instance) =>
       'info': instance.info,
       'questions': instance.questions.map((e) => e.toJson()).toList(),
       'videos': instance.videos,
-      'accessories': instance.accessories,
+      'accessories': instance.accessories.map((e) => e.toJson()).toList(),
     };
 
 LevelsBean _$LevelsBeanFromJson(Map<String, dynamic> json) => LevelsBean(

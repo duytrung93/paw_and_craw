@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:paw_and_craw/objects/pets/pet_accessory.dart';
 
 part 'data_animal.g.dart';
 
@@ -9,7 +10,7 @@ class DataAnimal {
   String info;
   List<LevelsBean> questions;
   List<String> videos;
-  dynamic accessories;
+  List<PetAccessory> accessories;
 
   DataAnimal({
     this.id = '',
@@ -17,6 +18,7 @@ class DataAnimal {
     this.info = '',
     this.questions = const [],
     this.videos = const [],
+    this.accessories = const [],
   });
 
   factory DataAnimal.fromJson(Map<String, dynamic> json) =>
