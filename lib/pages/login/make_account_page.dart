@@ -3,11 +3,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gif/gif.dart';
+import 'package:paw_and_craw/api/api.dart';
+import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/components/form/action_button.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/functions/local_storage.dart';
 import 'package:paw_and_craw/objects/user.dart';
+import 'package:paw_and_craw/objects/users/users_register.dart';
 import 'package:paw_and_craw/pages/login/choose_animal_page.dart';
 
 class MakeAccountPage extends StatefulWidget {
@@ -19,17 +22,15 @@ class MakeAccountPage extends StatefulWidget {
 }
 
 class _MakeAccountPageState extends State<MakeAccountPage> {
-  TextEditingController txtName = TextEditingController(text: '');
+  late UsersRegisterController controller;
 
-  late UserController userController;
   String error = '';
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    userController = UserController(User(userType: widget.type));
-    Get.put(userController);
+    controller = UsersRegisterController(UsersRegister());
     // showInput(context);
   }
 
@@ -48,285 +49,292 @@ class _MakeAccountPageState extends State<MakeAccountPage> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          //Bắn tim
+          //Nền
           Positioned(
-            top: 10,
-            left: 20,
-            child: Gif(
-              image: AssetImage('assets/images/image30.gif'),
-              width: 100,
-              autostart: Autostart.loop,
-              duration: Duration(seconds: 6),
-            ),
-          ),
-          //Cầu vồng
-          Positioned(
-            top: 130,
-            left: 80,
-            child: Image.asset(
-              'assets/images/image34.png',
-              width: 80,
-            ),
-          ),
-          //Deco chim
-          Positioned(
-            bottom: -30,
-            left: -40,
-            child: Image.asset('assets/images/Picture1.png', width: 230),
-          ),
-          //Chim
-          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
             bottom: 0,
-            left: 5,
-            child: Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.rotationY(pi),
-              child: Image.asset(
-                'assets/images/image24.gif',
-                width: 100,
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: Transform.rotate(
+                angle: pi / 2,
+                child: Opacity(
+                  opacity: 0.7,
+                  child: Image.asset(
+                    'assets/v2_images/new_account_bg.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
           ),
-          //Bong bóng
-          Positioned(
-            bottom: 135,
-            left: 40,
-            child: Image.asset('assets/images/image29.png', width: 70),
-          ),
-
-          //Sao
-          Positioned(
-            bottom: 10,
-            left: 180,
-            child: Image.asset(
-              'assets/images/image35.gif',
-              width: 80,
+          //Bắn tim
+          FixedImage(
+            top: 405,
+            left: 698,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                var check = controller.data.value.getValidate();
+                if (check != null) {
+                  Global.showMessage(check, messageColor: Colors.redAccent);
+                } else {
+                  API.users.register(info: controller.data.value).then((value) {
+                    API.users
+                        .login(
+                      username: controller.data.value.username,
+                      password: controller.data.value.password,
+                    )
+                        .then((value) {
+                      LocalStorage.setUser(value);
+                      Get.offAllNamed('/');
+                    });
+                  });
+                }
+              },
+              child: Stack(
+                children: [
+                  Gif(
+                    image: AssetImage('assets/v2_images/new_account_btn.gif'),
+                    width: 80,
+                    autostart: Autostart.loop,
+                    duration: Duration(seconds: 6),
+                  ),
+                  Positioned(
+                    top: 28,
+                    left: 15,
+                    child: Text(
+                      'Okay!',
+                      style: TextStyle(fontFamily: 'LobsterTwo', fontSize: 20),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
 
-          //Mây hồng
-          Positioned(
-            top: -40,
-            right: -48,
-            child: Image.asset('assets/images/image25.png', height: 220),
-          ),
-
-          //Trang trí mây
-          Positioned(
-            top: 30,
-            right: 20,
-            child: Image.asset('assets/images/image27.png', width: 130),
-          ),
-
-          //Hoa
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Image.asset('assets/images/image19.png', width: 300),
-          ),
-          //Con sóc
-          Positioned(
-            bottom: 0,
-            right: 280,
-            child: Image.asset('assets/images/image21.png', width: 60),
-          ),
-          //Kính con sóc
-          Positioned(
-            bottom: 38,
-            right: 300,
-            child: Image.asset('assets/images/image33.png', width: 35),
-          ),
-
-          SingleChildScrollView(
+          FixedImage(
+            top: 70,
+            left: 78,
             child: Column(
               children: [
-                Text(
-                  widget.type == UserType.playWithoutAccount
-                      ? 'PLAY WITHOUT ACCOUNT!'
-                      : widget.type == UserType.newAccount
-                          ? 'MAKE NEW ACCOUNT'
-                          : '',
-                  style: TextStyle(
-                      fontFamily: 'Bungee',
-                      color: Color(0xffffbd59),
-                      fontSize: 38,
-                      fontStyle: FontStyle.italic),
+                Image.asset(
+                  'assets/v2_images/new_account_cauvong.png',
+                  width: 160,
                 ),
-                SizedBox(height: 40),
                 Text(
-                  widget.type == UserType.loginAccount
-                      ? 'LOGIN YOUR ACCOUNT'
-                      : 'Choose your name'.toUpperCase(),
+                  'Make a',
                   style: TextStyle(
-                    fontFamily: 'lazy_dog',
-                    color: Color(0xfff4ca44),
-                    fontSize: 45,
-                    // fontStyle: FontStyle.italic
+                    fontFamily: 'Gladiola',
+                    fontSize: 80,
+                    height: 1,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        color: Color(0xffffb81b),
+                        blurRadius: 30,
+                      )
+                    ],
                   ),
                 ),
-                Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25.0, vertical: 10),
-                      child: Image.asset(
-                        'assets/images/image31.png',
-                        width: 300,
-                      ),
-                    ),
-                    Positioned(
-                      right: 25,
-                      top: 10,
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: Container(
-                          width: 25,
-                          height: 25,
-                          color: Colors.transparent,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      width: 250,
-                      top: 75,
-                      left: 50,
-                      child: GestureDetector(
-                        onTap: () {
-                          showInput(context);
-                        },
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                controller: txtName,
-                                maxLength: 10,
-                                textAlign: TextAlign.center,
-                                enabled: false,
-                                style: TextStyle(
-                                  fontFamily: 'Shantell Sans',
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                                // autovalidateMode: AutovalidateMode.always,
-                                validator: (value) {
-                                  if (txtName.text.isEmpty) {
-                                    return "Please input your name";
-                                  }
-                                  if (error.isNotEmpty) return error;
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                    isDense: true,
-                                    hintText: 'Input your name',
-                                    contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 10),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    errorStyle: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .error, // or any other color
-                                    ),
-                                    counterStyle:
-                                        TextStyle(color: Colors.grey)),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                        top: 5,
-                        left: 0,
-                        child: Transform.rotate(
-                            angle: pi * 1.91,
-                            child: Image.asset(
-                              'assets/images/image36.gif',
-                              width: 80,
-                            )))
-                  ],
-                ),
-                ActionButton(
-                  action: () {
-                    error = "";
-                    if (_formKey.currentState!.validate()) {
-                      switch (widget.type) {
-                        case UserType.newAccount:
-                          LocalStorage.getUser(userController.data.value.name)
-                              .then((value) {
-                            if (value != null) {
-                              error = "This name is already registered";
-                              _formKey.currentState!.validate();
-                            } else {
-                              Global.to(ChooseAnimalPage());
-                            }
-                          });
-                          break;
-                        case UserType.loginAccount:
-                          LocalStorage.getUser(userController.data.value.name)
-                              .then((value) {
-                            if (value == null) {
-                              error = "Name does not exist";
-                              _formKey.currentState!.validate();
-                            } else {
-                              LocalStorage.setCurrentUser(
-                                      userController.data.value.name)
-                                  .then((value) {
-                                Get.offAllNamed('/');
-                              });
-                            }
-                          });
-                          break;
-
-                        case UserType.playWithoutAccount:
-                          LocalStorage.getUser(userController.data.value.name)
-                              .then((value) {
-                            if (value != null) {
-                              error = "This name is already registered";
-                              _formKey.currentState!.validate();
-                            } else {
-                              Global.to(ChooseAnimalPage());
-                            }
-                          });
-                          break;
-                      }
-                    }
-                  },
-                  child: Text(
-                    "Okay!",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'Francois One',
-                        decoration: TextDecoration.underline),
+                Text(
+                  'NEW ACCOUNT',
+                  style: TextStyle(
+                    height: 1,
+                    fontFamily: 'impact',
+                    fontSize: 30,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        color: Color(0xffffb81b),
+                        blurRadius: 30,
+                      )
+                    ],
                   ),
                 ),
               ],
             ),
-          )
+          ),
+
+          FixedImage(
+            top: 320,
+            left: 24,
+            child: Column(
+              spacing: 5,
+              children: [
+                Text(
+                  'Name ( do not use your usual name )',
+                  style: TextStyle(fontFamily: 'LobsterTwo', fontSize: 26),
+                ),
+                Obx(
+                  () => buildInput(
+                    context,
+                    hintText: 'Input your name',
+                    initialValue: controller.data.value.fullName,
+                    onChanged: (v) {
+                      controller.data.update((val) => val?.fullName = v);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          FixedImage(
+            top: 68,
+            left: 359,
+            child: Column(
+              spacing: 5,
+              children: [
+                Text(
+                  'Login name',
+                  style: TextStyle(fontFamily: 'LobsterTwo', fontSize: 26),
+                ),
+                Obx(
+                  () => buildInput(
+                    context,
+                    initialValue: controller.data.value.username,
+                    hintText: 'Input your username',
+                    onChanged: (v) {
+                      controller.data.update((val) => val?.username = v);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          FixedImage(
+            top: 182,
+            left: 382,
+            child: Column(
+              spacing: 5,
+              children: [
+                Text(
+                  'Create your own password',
+                  style: TextStyle(fontFamily: 'LobsterTwo', fontSize: 26),
+                ),
+                Obx(
+                  () => buildInput(
+                    context,
+                    initialValue: controller.data.value.password,
+                    hintText: 'Input your pasword',
+                    obscureText: true,
+                    onChanged: (v) {
+                      controller.data.update((val) => val?.password = v);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          FixedImage(
+            top: 297,
+            left: 423,
+            child: Column(
+              spacing: 5,
+              children: [
+                Text(
+                  'Enter your password one more time',
+                  style: TextStyle(fontFamily: 'LobsterTwo', fontSize: 26),
+                ),
+                Obx(
+                  () => buildInput(
+                    context,
+                    initialValue: controller.data.value.rePassword,
+                    hintText: 'Confirm your pasword',
+                    obscureText: true,
+                    onChanged: (v) {
+                      controller.data.update((val) => val?.rePassword = v);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          FixedImage(
+            top: 0,
+            left: 750,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Image.asset(
+                'assets/images/image87.png',
+                width: 20,
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  void showInput(BuildContext context) {
-    Global.showInput(context,
-            initialValue: txtName.text,
-            maxLength: 10,
-            hintText: 'Input your name')
-        .then(
-      (value) {
-        txtName.text = value;
-        _formKey.currentState!.validate();
-        userController.data.update(
-          (val) {
-            val?.name = txtName.text;
+  Widget buildInput(
+    BuildContext context, {
+    String? hintText,
+    String? initialValue,
+    bool obscureText = false,
+    required Function(String v) onChanged,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        Global.showInput(context,
+                initialValue: initialValue ?? '',
+                hintText: hintText,
+                obscureText: obscureText)
+            .then(
+          (value) {
+            onChanged(value);
           },
         );
       },
+      child: Stack(
+        children: [
+          Image.asset(
+            'assets/v2_images/new_account_input.png',
+            width: 312,
+            fit: BoxFit.fill,
+            // width: 100,
+          ),
+          Positioned(
+            top: obscureText ? 14 : 8,
+            left: 35,
+            child: Text(
+              obscureText
+                  ? List.generate((initialValue ?? '').length, (index) => '*')
+                      .join('')
+                  : initialValue ?? '',
+              style: TextStyle(
+                fontFamily: 'Shantell Sans',
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 25,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
+
+  // void showInput(BuildContext context) {
+  //   Global.showInput(context,
+  //           initialValue: txtName.text,
+  //           maxLength: 10,
+  //           hintText: 'Input your name')
+  //       .then(
+  //     (value) {
+  //       txtName.text = value;
+  //       _formKey.currentState!.validate();
+  //       userController.data.update(
+  //         (val) {
+  //           val?.name = txtName.text;
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 }

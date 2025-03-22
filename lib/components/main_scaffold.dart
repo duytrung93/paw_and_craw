@@ -18,12 +18,15 @@ class MainScaffold extends StatelessWidget {
               child: FittedBox(
                 fit: BoxFit.contain,
                 alignment: Alignment.center,
-                child: SizedBox(
+                child: Container(
                   width: Global.targetPlatform.width,
                   height: Global.targetPlatform.height,
-                  child: Scaffold(
-                    backgroundColor: backgroundColor ?? Global.mainColor,
-                    body: child,
+                  color: Colors.black,
+                  child: ClipRRect(
+                    child: Scaffold(
+                      backgroundColor: backgroundColor ?? Global.mainColor,
+                      body: child,
+                    ),
                   ),
                 ),
               ),

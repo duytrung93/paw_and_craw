@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gif/gif.dart';
+import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
+import 'package:paw_and_craw/objects/pet_add.dart';
 import 'package:paw_and_craw/objects/user.dart';
 import 'package:paw_and_craw/pages/login/choose_animal_name_page.dart';
 
@@ -16,183 +18,174 @@ class ChooseAnimalPage extends StatefulWidget {
 }
 
 class _ChooseAnimalPageState extends State<ChooseAnimalPage> {
-  Rx<User> get user => Get.find<UserController>().data;
+  late PetAddController petAddController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    petAddController = PetAddController(PetAdd());
+    Get.put(petAddController);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainScaffold(
       child: Stack(
         fit: StackFit.expand,
         children: [
-          //Vương miệng
-          Positioned(
-            top: 10,
-            left: 40,
-            child: Gif(
-              image: AssetImage('assets/images/image49.gif'),
-              width: 80,
-              autostart: Autostart.loop,
-              duration: Duration(seconds: 2),
-            ),
-          ),
-          //Nấm
+          //Nền
           Positioned(
             top: 0,
-            right: 30,
-            child: Gif(
-              image: AssetImage('assets/images/image46.gif'),
-              width: 70,
-              autostart: Autostart.loop,
-              duration: Duration(seconds: 2),
-            ),
-          ),
-          //Lời chào
-          Positioned(
-              top: 10,
-              left: 140,
-              child: Obx(
-                () => Text(
-                  'Welcome ${user.value.name}'.toUpperCase(),
-                  style: TextStyle(
-                      fontFamily: 'Shantell Sans',
-                      color: Color(0xffb0cceb),
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold),
-                ),
-              )),
-          //Mô tả
-          Positioned(
-            top: 90,
-            left: 20,
-            child: Text(
-              'Choose your favorite animal!',
-              style: TextStyle(
-                fontFamily: 'DejaVu Serif',
-                fontWeight: FontWeight.bold,
-                fontSize: 29,
-              ),
-            ),
-          ),
-
-          //Nơ
-          Positioned(
-            top: 80,
-            left: 540,
-            child: Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.rotationY(pi),
-              child: Image.asset(
-                'assets/images/image51.png',
-                width: 70,
-              ),
-            ),
-          ),
-
-          //Gấu trúc
-          Positioned(
-            top: 150,
-            left: 20,
-            child: GestureDetector(
-              onTap: () {
-                pickAnimal(0);
-              },
-              child: Image.asset(
-                'assets/images/image37.png',
-                width: 130,
-              ),
-            ),
-          ),
-
-          //Rùa
-          Positioned(
-            top: 170,
-            left: 260,
-            child: GestureDetector(
-              onTap: () {
-                pickAnimal(1);
-              },
-              child: Image.asset(
-                'assets/images/image43.png',
-                width: 150,
-              ),
-            ),
-          ),
-
-          //Khỉ
-          Positioned(
-            top: 130,
-            left: 460,
-            child: GestureDetector(
-              onTap: () {
-                pickAnimal(2);
-              },
-              child: Image.asset(
-                'assets/images/image39.png',
-                width: 150,
-              ),
-            ),
-          ),
-
-          //Hoa
-          Positioned(
-            bottom: 0,
             left: 0,
-            child: Image.asset(
-              'assets/images/image47.png',
-              width: 110,
+            right: 0,
+            bottom: 0,
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: Transform.rotate(
+                angle: pi * 2,
+                child: Image.asset(
+                  'assets/v2_images/choose_animal_bg.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
           ),
 
-          //Báo
-          Positioned(
-            bottom: 20,
-            left: 120,
+          FixedImage(
+            top: 24,
+            left: 216,
+            child: Image.asset(
+              'assets/v2_images/choose_animal_sao.png',
+              width: 450,
+            ),
+          ),
+
+          FixedImage(
+            top: 28,
+            left: 225,
+            child: Text(
+              'Choose your\nanimals',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontFamily: 'Nickainley',
+                  color: Color(0xffff7828),
+                  fontSize: 80,
+                  height: 1,
+                  // fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                        color: Color(0xffff3873),
+                        offset: Offset(0.5, 2.5),
+                        blurRadius: 4)
+                  ]),
+            ),
+          ),
+          FixedImage(
+            top: 120,
+            left: 204,
+            child: Image.asset(
+              'assets/v2_images/choose_animal_tim.png',
+              width: 80,
+            ),
+          ),
+          FixedImage(
+            top: 117,
+            left: 499,
+            child: Image.asset(
+              'assets/v2_images/choose_animal_tim.png',
+              width: 80,
+            ),
+          ),
+
+          FixedImage(
+            top: 130,
+            left: 4,
             child: GestureDetector(
               onTap: () {
-                pickAnimal(3);
+                pickAnimal('panda');
               },
-              child: Image.asset(
-                'assets/images/image41.png',
-                width: 180,
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/v2_images/choose_animal_pika_panda.png',
+                    width: 215,
+                  ),
+                  Text(
+                    'Panda',
+                    style: TextStyle(fontFamily: 'MoreSugar', fontSize: 28),
+                  )
+                ],
               ),
             ),
           ),
-          //Chim
-          Positioned(
-            bottom: 50,
-            left: 350,
+
+          FixedImage(
+            top: 245,
+            left: 223,
             child: GestureDetector(
               onTap: () {
-                pickAnimal(4);
+                pickAnimal('rabbitpika');
               },
-              child: Image.asset(
-                'assets/images/image44.png',
-                width: 220,
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/v2_images/choose_animal_pika_rabbit.png',
+                    width: 130,
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Pika rabbit',
+                    style: TextStyle(fontFamily: 'MoreSugar', fontSize: 28),
+                  )
+                ],
               ),
             ),
           ),
-          //Capypara
-          Positioned(
-            bottom: 100,
-            right: 20,
+
+          FixedImage(
+            top: 181,
+            left: 403,
             child: GestureDetector(
               onTap: () {
-                pickAnimal(5);
+                pickAnimal('rhino');
               },
-              child: Image.asset(
-                'assets/images/image38.png',
-                width: 120,
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/v2_images/choose_animal_rino.png',
+                    width: 200,
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Rhino',
+                    style: TextStyle(fontFamily: 'MoreSugar', fontSize: 28),
+                  )
+                ],
               ),
             ),
           ),
-          //Cỏ
-          Positioned(
-            bottom: 0,
-            right: 30,
-            child: Gif(
-              image: AssetImage('assets/images/image50.gif'),
-              width: 140,
-              autostart: Autostart.loop,
-              duration: Duration(seconds: 6),
+
+          FixedImage(
+            top: 239,
+            left: 569,
+            child: GestureDetector(
+              onTap: () {
+                pickAnimal('saola');
+              },
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/v2_images/choose_animal_saola.png',
+                    width: 200,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Saola',
+                    style: TextStyle(fontFamily: 'MoreSugar', fontSize: 28),
+                  )
+                ],
+              ),
             ),
           ),
         ],
@@ -200,9 +193,9 @@ class _ChooseAnimalPageState extends State<ChooseAnimalPage> {
     );
   }
 
-  void pickAnimal(int i) {
-    user.update((val) {
-      val?.pet_id = i;
+  void pickAnimal(String i) {
+    petAddController.data.update((val) {
+      val?.animalId = i;
     });
     Global.to(ChooseAnimalNamePage());
   }

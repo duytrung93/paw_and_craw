@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
+import 'package:paw_and_craw/objects/pets/my_pets.dart';
 import 'package:paw_and_craw/objects/user.dart';
 import 'package:paw_and_craw/objects/youtube_metadata_fetch.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -35,6 +36,7 @@ class VideoList extends StatefulWidget {
 
 class _VideoListState extends State<VideoList> {
   Rx<User> get user => Get.find<UserController>().data;
+  Rx<MyPets> get pet => Get.find<MyPetsController>().data;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +70,7 @@ class _VideoListState extends State<VideoList> {
         mainAxisSpacing: 10,
         childAspectRatio: 1.5,
         padding: EdgeInsets.all(10),
-        children: user.value.dataAnimal.videos
+        children: pet.value.dataAnimal.videos
             .map((e) => VideoPlayer(video_id: e))
             .toList(),
       ),

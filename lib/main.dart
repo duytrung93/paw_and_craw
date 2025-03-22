@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:paw_and_craw/api/api.dart';
 import 'package:paw_and_craw/components/loading_dialog.dart';
+import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/functions/local_storage.dart';
 import 'package:paw_and_craw/pages/home/home_page.dart';
+import 'package:paw_and_craw/pages/login/choose_animal_page.dart';
 import 'package:paw_and_craw/pages/login/welcome_page.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -17,8 +20,19 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   // This widget is the root of your application.
   @override
@@ -83,15 +97,76 @@ class MyApp extends StatelessWidget {
           name: '/',
           page: () {
             return FutureBuilder(
-              future: Future.wait([LocalStorage.getCurrentUser()]),
+              future: API.animals.get(),
               builder: (context, snapshot) {
-                Global.loginResult = snapshot.data?[0];
-                return Global.loginResult != null ? HomePage() : WelcomePage();
+                if (snapshot.connectionState == ConnectionState.done) {
+                  Global.animals = snapshot.data ?? [];
+                  return RedirectPage();
+                } else {
+                  return Container();
+                }
               },
             );
           },
         ),
+        GetPage(
+          name: '/WelcomePage',
+          page: () => WelcomePage(),
+        ),
+        GetPage(
+          name: '/HomePage',
+          page: () => HomePage(),
+        ),
+        GetPage(
+          name: '/ChooseAnimalPage',
+          page: () => ChooseAnimalPage(),
+        ),
       ],
     );
+  }
+}
+
+class RedirectPage extends StatefulWidget {
+  const RedirectPage({super.key});
+
+  @override
+  State<RedirectPage> createState() => _RedirectPageState();
+}
+
+class _RedirectPageState extends State<RedirectPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initialData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MainScaffold(child: Container());
+  }
+
+  Future<void> initialData() async {
+    var user = await LocalStorage.getUser();
+    if (user != null) {
+      Global.loginResult = user;
+      if (user.token == null) {
+        var myPet = await LocalStorage.getMyPet();
+        if (myPet != null) {
+          Global.myPets = myPet;
+          Get.offAllNamed('/HomePage');
+        }
+      } else {
+        var pet = await API.pets.get();
+        if (pet != null) {
+          Global.myPets = pet;
+          Get.offAllNamed('/HomePage');
+        } else {
+          Get.offAllNamed('/ChooseAnimalPage');
+        }
+      }
+    } else {
+      Get.offAllNamed('/WelcomePage');
+    }
   }
 }

@@ -7,9 +7,10 @@ part of 'data_animal.dart';
 // **************************************************************************
 
 DataAnimal _$DataAnimalFromJson(Map<String, dynamic> json) => DataAnimal(
-      id: json['id'] as num? ?? 0,
+      id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
-      levels: (json['levels'] as List<dynamic>?)
+      info: json['info'] as String? ?? '',
+      questions: (json['questions'] as List<dynamic>?)
               ?.map((e) => LevelsBean.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
@@ -17,14 +18,16 @@ DataAnimal _$DataAnimalFromJson(Map<String, dynamic> json) => DataAnimal(
               ?.map((e) => e as String)
               .toList() ??
           const [],
-    );
+    )..accessories = json['accessories'];
 
 Map<String, dynamic> _$DataAnimalToJson(DataAnimal instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'levels': instance.levels.map((e) => e.toJson()).toList(),
+      'info': instance.info,
+      'questions': instance.questions.map((e) => e.toJson()).toList(),
       'videos': instance.videos,
+      'accessories': instance.accessories,
     };
 
 LevelsBean _$LevelsBeanFromJson(Map<String, dynamic> json) => LevelsBean(

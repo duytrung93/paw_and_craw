@@ -2,9 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paw_and_craw/api/api.dart';
+import 'package:paw_and_craw/components/coins_controls.dart';
+import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
+import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/functions/local_storage.dart';
 import 'package:paw_and_craw/objects/data_animal.dart';
+import 'package:paw_and_craw/objects/pets/my_pets.dart';
 import 'package:paw_and_craw/objects/user.dart';
 
 class QuizPage extends StatefulWidget {
@@ -16,6 +21,7 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   Rx<User> get user => Get.find<UserController>().data;
+  Rx<MyPets> get pet => Get.find<MyPetsController>().data;
   Rx<QuestionsBean> currentQuestion = QuestionsBean().obs;
 
   @override
@@ -40,7 +46,7 @@ class _QuizPageState extends State<QuizPage> {
             top: 20,
             left: 180,
             child: Text(
-              'Question\n${'${(user.value.point % 10) + 1}'.padLeft(2, '0')}',
+              'Question\n${'${(pet.value.age!) + 1}'.padLeft(2, '0')}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'MoreSugar',
@@ -49,6 +55,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
             ),
           ),
+          FixedImage(top: 15, left: 660, child: CoinsControls()),
           Positioned(
             top: 50,
             left: 20,
@@ -68,7 +75,7 @@ class _QuizPageState extends State<QuizPage> {
                         Padding(
                           padding: const EdgeInsets.all(20),
                           child: Obx(() => Text(
-                                user.value.petName ?? '',
+                                pet.value.name ?? '',
                                 style: TextStyle(
                                     fontFamily: 'MoreSugar', fontSize: 30),
                               )),
@@ -79,7 +86,7 @@ class _QuizPageState extends State<QuizPage> {
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Obx(() => Image.asset(
-                                    user.value.getPetAvatar(),
+                                    pet.value.getPetAvatar(),
                                     fit: BoxFit.contain,
                                     width: 160,
                                   )),
@@ -89,7 +96,7 @@ class _QuizPageState extends State<QuizPage> {
                         Padding(
                           padding: const EdgeInsets.all(20),
                           child: Obx(() => Text(
-                                user.value.getCurrentLevel?.level_name ?? '',
+                                pet.value.getCurrentLevel?.level_name ?? '',
                                 style: TextStyle(
                                     fontFamily: 'Arturo', fontSize: 20),
                               )),
@@ -177,7 +184,7 @@ class _QuizPageState extends State<QuizPage> {
                                 child: Container(
                                   height: 45,
                                   decoration: BoxDecoration(
-                                    color: user.value.point % 10 > index
+                                    color: pet.value.age! % 10 > index
                                         ? Color(0xffff8888)
                                         : Color(0xffffc7c7),
                                     border: Border.all(
@@ -236,7 +243,7 @@ class _QuizPageState extends State<QuizPage> {
   final _random = Random();
 
   void getCurrentQuestion() {
-    var curentLevel = user.value.getCurrentLevel;
+    var curentLevel = pet.value.getCurrentLevel;
     if (curentLevel != null) {
 // generate a random index based on the list length
 // and use it to retrieve the element
@@ -263,19 +270,47 @@ class _QuizPageState extends State<QuizPage> {
       enabled: !delay,
       answer: e,
       index: labelIndex,
-      onTap: () {
+      onTap: () async {
         setState(() {
           delay = true;
         });
         if (e.c) {
-          user.update(
+          var newAge = (pet.value.age ?? 0) + 1;
+          var newStage = pet.value.stage ?? 'Newborn';
+          if (newAge >= 10) {
+            if (pet.value.stage?.toLowerCase() == 'Newborn'.toLowerCase()) {
+              newAge = 0;
+              newStage = 'Teenager';
+            } else if (pet.value.stage?.toLowerCase() ==
+                'Teenager'.toLowerCase()) {
+              newAge = 0;
+              newStage = 'Adult';
+            }
+          }
+          if (user.value.token != null) {
+            await Future.wait([
+              API.pets.updateAgeStage(age: newAge, stage: newStage),
+              API.users.addCoin(coin: 5),
+            ]);
+          }
+
+          pet.update(
             (val) {
-              val?.point = (val.point ?? 0) + 1;
+              val?.age = newAge;
+              val?.stage = newStage;
+              // val?.coins = (val.coins ?? 0) + 5;
             },
           );
+          user.update((val) {
+            val?.coin = (val.coin ?? 0) + 5;
+          });
+
+          LocalStorage.setMyPet(pet.value);
           LocalStorage.setUser(user.value);
         }
-        Future.delayed(Duration(seconds: 1), () {
+
+        Future.delayed(
+            Duration(seconds: e.c && user.value.token != null ? 0 : 1), () {
           setState(() {
             getCurrentQuestion();
             delay = false;
@@ -358,9 +393,21 @@ class _AnswerQuestionState extends State<AnswerQuestion> {
             ),
           ),
           color != Colors.black
-              ? Icon(
-                  color == Colors.green ? Icons.check : Icons.close,
-                  color: color,
+              ? Row(
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      color == Colors.green ? Icons.check : Icons.close,
+                      color: color,
+                    ),
+                    color == Colors.green
+                        ? Text(
+                            '+5D',
+                            style: defaultStyle.copyWith(
+                                color: Colors.green, height: 1.5),
+                          )
+                        : Container(),
+                  ],
                 )
               : Container()
         ],

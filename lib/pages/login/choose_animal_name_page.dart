@@ -2,9 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paw_and_craw/api/api.dart';
 import 'package:paw_and_craw/components/form/action_button.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
+import 'package:paw_and_craw/functions/local_storage.dart';
+import 'package:paw_and_craw/objects/pet_add.dart';
+import 'package:paw_and_craw/objects/pets/my_pets.dart';
 import 'package:paw_and_craw/objects/user.dart';
 import 'package:paw_and_craw/pages/login/choose_gender_page.dart';
 
@@ -17,7 +21,11 @@ class ChooseAnimalNamePage extends StatefulWidget {
 
 class _ChooseAnimalNamePageState extends State<ChooseAnimalNamePage> {
   TextEditingController txtPetName = TextEditingController();
-  Rx<User> get user => Get.find<UserController>().data;
+  Rx<User> get user => Get.isRegistered<UserController>()
+      ? Get.find<UserController>().data
+      : Get.put(UserController(Global.loginResult!)).data;
+  // Rx<String> petName = ''.obs;
+  Rx<PetAdd> get petAdd => Get.find<PetAddController>().data;
 
   final _formKey = GlobalKey<FormState>();
   @override
@@ -199,15 +207,41 @@ class _ChooseAnimalNamePageState extends State<ChooseAnimalNamePage> {
                   ActionButton(
                     action: () {
                       if (_formKey.currentState!.validate()) {
-                        Global.to(ChooseGenderPage());
+                        // Global.to(ChooseGenderPage());
+                        // user.update(
+                        //   (val) {
+                        //     // val?.gender = i;
+                        //     if (val?.userType != UserType.playWithoutAccount) {
+                        //       val?.userType = UserType.loginAccount;
+                        //     }
+                        //   },
+                        // );
+                        ///playWithoutAccount
+                        if (user.value.token != null) {
+                          API.pets.add(info: petAdd.value).then((value) {
+                            Get.offAllNamed('/');
+                          });
+                        } else {
+                          Future.wait([
+                            LocalStorage.setUser(user.value),
+                            LocalStorage.setMyPet(
+                              MyPets(
+                                animalId: petAdd.value.animalId,
+                                age: 0,
+                                name: petAdd.value.name,
+                                stage: 'Newborn',
+                              ),
+                            ),
+                          ]).then((value) {
+                            Get.offAllNamed('/');
+                          });
+                        }
                       }
                     },
                     child: Text(
                       "Okay!",
                       style: TextStyle(
-                          color: Color(0xff0000ff),
-                          fontFamily: 'Francois One',
-                          decoration: TextDecoration.underline),
+                          color: Color(0xff0000ff), fontFamily: 'Francois One'),
                     ),
                   ),
                 ],
@@ -223,16 +257,12 @@ class _ChooseAnimalNamePageState extends State<ChooseAnimalNamePage> {
     Global.showInput(context,
             hintText: 'Input your pet name',
             maxLength: 10,
-            initialValue: user.value.petName ?? '')
+            initialValue: petAdd.value.name ?? '')
         .then(
       (value) {
         txtPetName.text = value;
         _formKey.currentState!.validate();
-        user.update(
-          (val) {
-            val?.petName = txtPetName.text;
-          },
-        );
+        petAdd.value.name = txtPetName.text;
       },
     );
   }

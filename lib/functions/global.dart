@@ -5,6 +5,8 @@ import 'package:paw_and_craw/get_controller/loading_controller.dart';
 import 'package:paw_and_craw/objects/data_animal.dart';
 import 'package:paw_and_craw/objects/user.dart';
 
+import '../objects/pets/my_pets.dart';
+
 const dataAnimalJson = [
   {
     'id': 0,
@@ -359,23 +361,23 @@ const dataAnimalJson = [
 var dataAnimals = dataAnimalJson.map((e) => DataAnimal.fromJson(e)).toList();
 
 class Global {
-  static Size get targetPlatform => Size(800, 450);
+  static Size get targetPlatform => Size(800, 500);
 
   static Color get mainBackgroundColor => Colors.black.withAlpha(15);
   static Color get mainColor => Color(0xfffef8d8);
   static User? loginResult;
+  static MyPets? myPets;
 
   static late LoadingController loadingController;
+
+  static List<DataAnimal> animals = [];
 
   static void init() {
     loadingController = Get.put(LoadingController(), permanent: true);
   }
 
   static Future logout() {
-    if (Global.loginResult?.userType == UserType.playWithoutAccount) {
-      LocalStorage.removeUser(Global.loginResult?.name);
-    }
-    return LocalStorage.setCurrentUser(null).then(
+    return LocalStorage.setUser(null).then(
       (value) {
         return Get.offAllNamed('/');
       },
@@ -407,7 +409,7 @@ class Global {
       title: title != null ? Text(title) : null,
       content: Text(
         message,
-        style: TextStyle(color: messageColor ?? mainColor),
+        style: TextStyle(color: messageColor ?? Colors.black),
       ),
       actions: actions,
     ));
@@ -422,6 +424,7 @@ class Global {
     String initialValue = '',
     String? hintText,
     int? maxLength,
+    bool obscureText = false,
   }) {
     return Future(
       () async {
@@ -457,6 +460,7 @@ class Global {
                               hintText: hintText,
                             ),
                             controller: txtName,
+                            obscureText: obscureText,
                             maxLength: maxLength,
                             // textAlign: TextAlign.center,
                             autofocus: true,

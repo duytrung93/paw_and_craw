@@ -4,16 +4,20 @@ part 'data_animal.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class DataAnimal {
-  num id;
+  String id;
   String name;
-  List<LevelsBean> levels;
+  String info;
+  List<LevelsBean> questions;
   List<String> videos;
+  dynamic accessories;
 
-  DataAnimal(
-      {this.id = 0,
-      this.name = '',
-      this.levels = const [],
-      this.videos = const []});
+  DataAnimal({
+    this.id = '',
+    this.name = '',
+    this.info = '',
+    this.questions = const [],
+    this.videos = const [],
+  });
 
   factory DataAnimal.fromJson(Map<String, dynamic> json) =>
       _$DataAnimalFromJson(json);

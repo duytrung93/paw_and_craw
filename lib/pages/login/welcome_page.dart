@@ -2,11 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:gif/gif.dart';
+import 'package:paw_and_craw/api/api.dart';
+import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/components/form/action_button.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/objects/user.dart';
+import 'package:paw_and_craw/pages/login/login_page.dart';
 import 'package:paw_and_craw/pages/login/make_account_page.dart';
+import 'package:paw_and_craw/pages/login/play_without_account_page.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -30,186 +34,128 @@ class _WelcomePageState extends State<WelcomePage>
         child: Stack(
       fit: StackFit.expand,
       children: [
-        //Vết chân
         Positioned(
-          top: 15,
-          left: 100,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           child: Image.asset(
-            'assets/images/Picture5.png',
-            width: 180,
-          ),
-        ),
-        //Ngôi sao
-        Positioned(
-          top: 200,
-          left: 170,
-          child: Gif(
-            image: AssetImage('assets/images/image15.gif'),
-            width: 100,
-            autostart: Autostart.loop,
-            duration: Duration(seconds: 2),
-          ),
-        ),
-        //Gấu trúc
-        Positioned(
-          top: 55,
-          left: 10,
-          child: Image.asset(
-            'assets/images/Picture3.png',
-            width: 180,
-          ),
-        ),
-        //Vũng nước
-        Positioned(
-          bottom: -20,
-          left: -50,
-          child: Image.asset(
-            'assets/images/Picture13.png',
-            width: 250,
-          ),
-        ),
-        //Cá voi
-        Positioned(
-          bottom: 50,
-          left: 40,
-          child: Image.asset(
-            'assets/images/Picture11.png',
-            width: 150,
-          ),
-        ),
-        //Vết cát
-        Positioned(
-          bottom: -20,
-          right: -50,
-          child: Image.asset(
-            'assets/images/Picture12.png',
-            width: 320,
+            'assets/v2_images/welcome_bg.png',
+            fit: BoxFit.cover,
           ),
         ),
         //Con tê giác
-        Positioned(
-          bottom: 20,
-          right: 20,
+        FixedImage(
+          top: 133,
+          left: 26,
           child: Image.asset(
-            'assets/images/Picture14.png',
-            width: 160,
+            'assets/v2_images/welcome_tegiac.png',
+            width: 180,
           ),
         ),
-        //Đèn lồng
-        Positioned(
+        //Con gấu trúc
+        FixedImage(
+          top: 322,
+          left: 46,
+          child: Image.asset(
+            'assets/v2_images/welcome_panda.png',
+            width: 140,
+          ),
+        ),
+
+        //Con thỏ trên
+        FixedImage(
           top: 0,
-          left: 238,
-          child: Gif(
-            image: AssetImage('assets/images/image14.gif'),
-            width: 60,
-            autostart: Autostart.loop,
-            duration: Duration(seconds: 1),
+          left: 667,
+          child: Image.asset(
+            'assets/v2_images/welcome_tho_top.png',
+            width: 230,
           ),
         ),
-        //Trăng treo
-        Positioned(
-          top: -35,
-          right: 105,
-          child: Image.asset('assets/images/Picture6.png', width: 170),
-        ),
-        //Mũi tên
-        Positioned(
-          top: 215,
-          right: 240,
-          child: Transform.rotate(
-            angle: pi / 4,
-            child: Gif(
-              image: AssetImage('assets/images/image16.gif'),
-              width: 50,
-              autostart: Autostart.loop,
-              duration: Duration(seconds: 2),
-            ),
+
+        //Con thỏ nhai carot
+        FixedImage(
+          top: 248,
+          left: 648,
+          child: Image.asset(
+            'assets/v2_images/welcome_tho.png',
+            width: 140,
           ),
-        ),
-        //Bông hoa
-        Positioned(
-          top: 160,
-          right: 110,
-          child: Gif(
-            image: AssetImage('assets/images/image13.gif'),
-            width: 120,
-            autostart: Autostart.loop,
-            duration: Duration(seconds: 6),
-          ),
-        ),
-        //COn hổ
-        Positioned(
-          top: 50,
-          right: 20,
-          child: Image.asset('assets/images/Picture7.png', width: 110),
         ),
         //COntent chính
-        Center(
-          child: Column(
-            spacing: 10,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Welcome to',
-                style: TextStyle(fontFamily: 'Comic Sans MS', fontSize: 15),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'PAWS & CLAWS\nPROTECTOR',
-                textAlign: TextAlign.center,
+        Column(
+          // spacing: 25,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/v2_images/welcome_title.png',
+              width: 480,
+            ),
+            SizedBox(height: 6),
+            ActionButton(
+              width: 350,
+              contentPadding: EdgeInsets.all(14),
+              borderColor: Color(0xffcb7f00),
+              action: () {
+                Global.to(MakeAccountPage(
+                  type: UserType.newAccount,
+                ));
+              },
+              child: Text(
+                'Make new account',
                 style: TextStyle(
-                  fontFamily: 'Shantell Sans',
-                  height: 1.2,
-                  fontSize: 50,
-                  color: Color(0xff503d3d),
+                  fontSize: 30,
+                  fontFamily: 'LobsterTwo',
+                  color: Colors.black,
+                  // fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 10),
-              ActionButton(
-                action: () {
-                  Global.to(MakeAccountPage(
-                    type: UserType.newAccount,
-                  ));
-                },
-                child: Text(
-                  'Make new a account'.toUpperCase(),
-                  style: TextStyle(
-                      fontFamily: 'Paytone One',
-                      color: Colors.black,
-                      decoration: TextDecoration.underline
-                      // fontWeight: FontWeight.bold,
-                      ),
+            ),
+            SizedBox(height: 30),
+            ActionButton(
+              width: 350,
+              contentPadding: EdgeInsets.all(14),
+              borderColor: Color(0xffcb7f00),
+              action: () {
+                Global.to(LoginPage());
+              },
+              child: Text(
+                'Log in',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.black,
+                  fontFamily: 'LobsterTwo',
                 ),
               ),
-              ActionButton(
-                action: () {
-                  Global.to(MakeAccountPage(
-                    type: UserType.loginAccount,
-                  ));
-                },
-                child: Text(
-                  'Log in',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Francois One',
-                  ),
+            ),
+            SizedBox(height: 30),
+
+            ActionButton(
+              width: 350,
+              contentPadding: EdgeInsets.all(14),
+              borderColor: Color(0xffcb7f00),
+              action: () {
+                Global.to(PlayWithoutAccountPage());
+              },
+              child: Text(
+                'Play with out account',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.black,
+                  fontFamily: 'LobsterTwo',
                 ),
               ),
-              ActionButton(
-                action: () {
-                  Global.to(MakeAccountPage(
-                    type: UserType.playWithoutAccount,
-                  ));
-                },
-                child: Text(
-                  'Play with out account',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'Francois One',
-                      decoration: TextDecoration.underline),
-                ),
-              ),
-            ],
+            ),
+          ],
+        ),
+
+        //vết chân
+        Positioned(
+          top: 240,
+          right: 250,
+          child: Image.asset(
+            'assets/v2_images/welcome_vetchan.png',
+            width: 80,
           ),
         ),
       ],
