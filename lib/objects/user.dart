@@ -13,7 +13,7 @@ class User {
   String? id;
   String? fullName;
   String? token;
-  num? coin;
+  int? coin;
 
   User({
     this.id,

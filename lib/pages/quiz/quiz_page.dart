@@ -83,14 +83,7 @@ class _QuizPageState extends State<QuizPage> {
                         Expanded(
                           child: FittedBox(
                             fit: BoxFit.contain,
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Obx(() => Image.asset(
-                                    pet.value.getPetAvatar(),
-                                    fit: BoxFit.contain,
-                                    width: 160,
-                                  )),
-                            ),
+                            child: Obx(() => pet.value.bindedAccessories),
                           ),
                         ),
                         Padding(

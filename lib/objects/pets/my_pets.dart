@@ -1,18 +1,23 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/objects/data_animal.dart';
 
 part 'my_pets.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class MyPets {
   String? animalId;
   String? userId;
   String? name;
   int? age;
   String? stage;
-  dynamic accessories;
+  List<MyPetsAccessory>? accessories;
+  List<MyPetsAccessory>? accessoriesBind;
   String? id;
   String? creationTime;
   String? concurrencyStamp;
@@ -24,9 +29,13 @@ class MyPets {
       this.age,
       this.stage,
       this.accessories,
+      this.accessoriesBind,
       this.id,
       this.creationTime,
-      this.concurrencyStamp});
+      this.concurrencyStamp}) {
+    accessories ??= [];
+    accessoriesBind ??= [];
+  }
 
   factory MyPets.fromJson(Map<String, dynamic> json) => _$MyPetsFromJson(json);
 
@@ -43,14 +52,74 @@ class MyPets {
         return element.level_name.toLowerCase() == stage?.toLowerCase();
       });
 
+  Widget get bindedAccessories {
+    var type = 0;
+    int x = age! % 10;
+    if (age! > 10) {
+      type = 3;
+    } else if (x == 0 && age! > 0) {
+      type = 3;
+    } else if (x < 3) {
+      type = 0;
+    } else if (x < 6) {
+      type = 1;
+    } else if (x < 9) {
+      type = 2;
+    } else {
+      type = 3;
+    }
+    // print(accessoriesBind?.length);
+    List<Widget> items = [
+      Image.asset(
+        getPetAvatar(),
+        width: 250,
+        fit: BoxFit.fill,
+      ),
+    ];
+    List<String> check = [];
+    var accessories = accessoriesBind?.map((accessBind) {
+          var selectedCog = dataAnimal.accessories.firstWhereOrNull((e) =>
+              e.accessory_id == accessBind.accessory_id &&
+              e.animal_stage == getCurrentLevel?.level &&
+              e.animal_stage_grow == type);
+          print(selectedCog?.toJson());
+          if (selectedCog == null) return Container();
+          if (check.contains('${selectedCog.accessory_id}')) {
+            return Container();
+          } else {
+            check.add('${selectedCog.accessory_id}');
+          }
+          return Positioned(
+            key: Key('${selectedCog.url}_${selectedCog.accessory_id}'),
+            top: selectedCog.y ?? 0,
+            left: selectedCog.x ?? 0,
+            child: Transform.rotate(
+              angle: pi * selectedCog.rotate! / 100,
+              child: Image.asset(
+                selectedCog.accessoryUrl,
+                width: selectedCog.width,
+              ),
+            ),
+          );
+        }).toList() ??
+        [];
+
+    items.addAll(accessories);
+
+    return Stack(
+      children: items,
+    );
+  }
+
   String getPetAvatar() {
     var data = getCurrentLevel;
 
     if (data != null) {
       var type = 0;
       int x = age! % 10;
-      print(x);
-      if (x == 0 && age! > 0) {
+      if (age! > 10) {
+        type = 3;
+      } else if (x == 0 && age! > 0) {
         type = 3;
       } else if (x < 3) {
         type = 0;
@@ -67,6 +136,18 @@ class MyPets {
       return 'assets/images/image71.png';
     }
   }
+}
+
+@JsonSerializable()
+class MyPetsAccessory {
+  String? accessory_id;
+
+  MyPetsAccessory({this.accessory_id});
+
+  factory MyPetsAccessory.fromJson(Map<String, dynamic> json) =>
+      _$MyPetsAccessoryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MyPetsAccessoryToJson(this);
 }
 
 class MyPetsController extends GetxController {
@@ -86,6 +167,7 @@ class MyPetsController extends GetxController {
       val?.id = value.id;
       val?.creationTime = value.creationTime;
       val?.concurrencyStamp = value.concurrencyStamp;
+      val?.accessoriesBind = value.accessoriesBind;
     });
   }
 }

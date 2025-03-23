@@ -10,7 +10,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       id: json['id'] as String?,
       fullName: json['fullName'] as String?,
       token: json['token'] as String?,
-      coin: json['coin'] as num?,
+      coin: (json['coin'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{

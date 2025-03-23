@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Global.to(ShopConfigPage());
+                    Global.to(ShopPage());
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,13 +271,7 @@ class _HomePageState extends State<HomePage> {
           Positioned(
             bottom: 69,
             left: 220,
-            child: Obx(
-              () => Image.asset(
-                petController.data.value.getPetAvatar(),
-                width: 250,
-                fit: BoxFit.contain,
-              ),
-            ),
+            child: Obx(() => petController.data.value.bindedAccessories),
           ),
           FixedImage(
             top: 24,
@@ -289,14 +283,16 @@ class _HomePageState extends State<HomePage> {
                   width: 250,
                   fit: BoxFit.contain,
                 ),
-                FixedImage(
-                  top: 20,
-                  left: 57,
+                Positioned(
+                  top: 15,
+                  left: 51,
+                  // dragable: true,
                   child: Text(
                     'Hey!\nWelcome to\nour app!',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'MoreSugar',
+                      height: 1.2,
                       fontSize: 28,
                     ),
                   ),

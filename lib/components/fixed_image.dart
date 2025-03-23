@@ -134,5 +134,6 @@ class _FixedImageState extends State<FixedImage> {
     if (widget.onDrag != null) {
       widget.onDrag!(left, top);
     }
+    print('left: ${left} - top: ${top}');
   }
 }

@@ -4,6 +4,7 @@ import 'package:curved_text/curved_text.dart';
 import 'package:flutter/material.dart';
 import 'package:gif/gif.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class DonateThanksPage extends StatefulWidget {
   const DonateThanksPage({super.key});
@@ -13,6 +14,20 @@ class DonateThanksPage extends StatefulWidget {
 }
 
 class _DonateThanksPageState extends State<DonateThanksPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration(seconds: 3), () {
+
+
+      if(mounted){
+        launchUrlString('https://pan.give.asia/campaign/safeguarding-vietnam-s-biodiversity-with-us?#/story');
+        Navigator.pop(context);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MainScaffold(
@@ -92,17 +107,16 @@ class _DonateThanksPageState extends State<DonateThanksPage> {
                   text: 'Thanks for donating',
                   // textAlign: TextAlign.center,
                   textStyle: TextStyle(
-                    fontFamily: 'lazy_dog',
-                    color: Color(0xffFE95F6),
-                    fontSize: 70,
-                    letterSpacing: -8,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black,
-                        blurRadius: 20,
-                      )
-                    ]
-                  ),
+                      fontFamily: 'lazy_dog',
+                      color: Color(0xffFE95F6),
+                      fontSize: 70,
+                      letterSpacing: -8,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black,
+                          blurRadius: 20,
+                        )
+                      ]),
                   curvature: 0.004,
                 )
               ],

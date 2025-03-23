@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gif/gif.dart';
+import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/components/form/action_button.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
@@ -22,66 +23,50 @@ class _DonatePageState extends State<DonatePage> {
           //topRight
           Positioned(
             top: 0,
+            left: 0,
             right: 0,
+            bottom: 0,
             child: Image.asset(
-              'assets/images/image124.png',
-              width: 150,
-            ),
-          ),
-          //BottomRight
-          Positioned(
-            bottom: 50,
-            right: 0,
-            child: Gif(
-              width: 200,
-              duration: Duration(seconds: 5),
-              autostart: Autostart.loop,
-              image: AssetImage('assets/images/image120.gif'),
+              'assets/v2_images/choose_animal_bg.png',
+              fit: BoxFit.fill,
             ),
           ),
 
-          //topLeft
-          Positioned(
-            top: 0,
-            left: -35,
-            child: Image.asset(
-              'assets/images/image122.png',
-              width: 195,
-            ),
-          ),
-
-          //BottomLeft
-          Positioned(
-            bottom: -20,
-            left: 10,
-            child: Image.asset(
-              'assets/images/image121.png',
-              width: 195,
-            ),
-          ),
           Center(
             child: Column(
               children: [
-                Text(
-                  'How much you\nwant to donate'.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Bungee',
-                    color: Color(0xffFFBD59),
-                    fontSize: 50,
+                Expanded(child: Container()),
+                Padding(
+                  padding: const EdgeInsets.all(40),
+                  child: Image.asset(
+                    'assets/v2_images/donate_icon.png',
+                    width: 200,
                   ),
                 ),
                 Expanded(child: Container()),
-                buildActionButton('\$5'),
-                buildActionButton('\$10'),
-                buildActionButton('\$20'),
-                buildActionButton('More or less'),
-                SizedBox(
-                  height: 50,
-                )
+                buildActionButton('Donate for Critically Endangered Gibbon'),
+                Expanded(child: Container()),
+                buildActionButton(
+                    'Dontate for safeguarding Vietnam’s Biodiversity'),
+                Expanded(child: Container()),
+                Expanded(child: Container()),
               ],
             ),
-          )
+          ),
+
+          FixedImage(
+            top: 0,
+            left: 750,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Image.asset(
+                'assets/images/image87.png',
+                width: 20,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -93,34 +78,33 @@ class _DonatePageState extends State<DonatePage> {
         Navigator.pop(context);
         Global.to(DonateThanksPage());
       },
-      child: Stack(
-        children: [
-          Container(
-            padding: EdgeInsets.only(top: 5),
-            child: ActionButton(
-              width: 250,
-              contentPadding: EdgeInsets.all(8),
-              backgroundColor: Colors.white,
-              borderColor: Color(0xffFFBD59),
-              action: () {
-                Navigator.pop(context);
-                Global.to(DonateThanksPage());
-              },
-              child: Text(
-                text,
-                style: TextStyle(color: Color(0xff196799), fontSize: 20),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+        decoration: BoxDecoration(
+            border: Border.all(width: 1, color: Colors.grey),
+            borderRadius: BorderRadius.circular(30)),
+        child: GestureDetector(
+          // width: 250,
+          // contentPadding: EdgeInsets.all(8),
+          // backgroundColor: Colors.white,
+          // borderColor: Color(0xffFFBD59),
+
+          onTap: () {
+            Navigator.pop(context);
+            Global.to(DonateThanksPage());
+          },
+          child: Opacity(
+            opacity: 0.3,
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Color(0xff196799),
+                fontSize: 20,
+                fontFamily: 'LobsterTwo',
               ),
             ),
           ),
-          Positioned(
-            top: 0,
-            left: 20,
-            child: Image.asset(
-              'assets/images/image125.png',
-              width: 70,
-            ),
-          )
-        ],
+        ),
       ),
     );
   }

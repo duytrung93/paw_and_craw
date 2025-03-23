@@ -423,7 +423,6 @@ class Global {
     BuildContext context, {
     String initialValue = '',
     String? hintText,
-    int? maxLength,
     bool obscureText = false,
   }) {
     return Future(
@@ -449,28 +448,30 @@ class Global {
                       color: Colors.white,
                       child: Stack(
                         children: <Widget>[
-                          TextField(
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 10,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 10,
+                                ),
+                                isDense: true,
+                                border: InputBorder.none,
+                                hintText: hintText,
                               ),
-                              isDense: true,
-                              border: InputBorder.none,
-                              hintText: hintText,
+                              controller: txtName,
+                              obscureText: obscureText,
+                              // textAlign: TextAlign.center,
+                              autofocus: true,
+                              style: TextStyle(
+                                fontFamily: 'Shantell Sans',
+                                fontWeight: FontWeight.bold,
+                              ),
+                              onEditingComplete: () {
+                                Navigator.pop(context);
+                              },
                             ),
-                            controller: txtName,
-                            obscureText: obscureText,
-                            maxLength: maxLength,
-                            // textAlign: TextAlign.center,
-                            autofocus: true,
-                            style: TextStyle(
-                              fontFamily: 'Shantell Sans',
-                              fontWeight: FontWeight.bold,
-                            ),
-                            onEditingComplete: () {
-                              Navigator.pop(context);
-                            },
                           ),
                           Positioned(
                             right: 10,

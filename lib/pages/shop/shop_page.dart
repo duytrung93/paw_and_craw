@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paw_and_craw/api/api.dart';
 import 'package:paw_and_craw/components/coins_controls.dart';
 import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
+import 'package:paw_and_craw/functions/global.dart';
+import 'package:paw_and_craw/functions/local_storage.dart';
 import 'package:paw_and_craw/objects/pets/my_pets.dart';
 import 'package:paw_and_craw/objects/pets/pet_accessory.dart';
 import 'package:paw_and_craw/objects/user.dart';
+import 'package:paw_and_craw/pages/shop/shop_config_page.dart';
 
 class ShopPage extends StatefulWidget {
   const ShopPage({super.key});
@@ -52,6 +56,20 @@ class _ShopPageState extends State<ShopPage> {
             child: CoinsControls(),
           ),
           FixedImage(
+            top: 20,
+            left: 582,
+            child: Global.loginResult?.id == 'admin'
+                ? GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      Global.to(ShopConfigPage());
+                    },
+                    child: Image.asset('assets/v2_images/home_setting.png',
+                        width: 30),
+                  )
+                : Container(),
+          ),
+          FixedImage(
             top: 65,
             left: 488,
             child: ClipRRect(
@@ -79,36 +97,7 @@ class _ShopPageState extends State<ShopPage> {
                             border: Border.all(width: 1, color: Colors.white),
                           ),
                           child: index < access.length
-                              ? Obx(
-                                  () => GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onTap: () {
-                                      if (selected.value
-                                          .contains(access[index])) {
-                                        if (selectedItem.value == index) {
-                                          selectedItem.value = null;
-                                        }
-                                        selected.update((val) {
-                                          val?.remove(access[index]);
-                                        });
-                                      } else {
-                                        selectIndex(index);
-                                        selected.update((val) {
-                                          val?.add(access[index]);
-                                        });
-                                      }
-                                    },
-                                    child: Opacity(
-                                      opacity:
-                                          selected.value.contains(access[index])
-                                              ? 0.5
-                                              : 1,
-                                      child: Image.asset(
-                                        'assets/v2_images/${access[index].accessory_id}',
-                                      ),
-                                    ),
-                                  ),
-                                )
+                              ? buildItem(index)
                               : Container(),
                         ),
                       ),
@@ -118,35 +107,6 @@ class _ShopPageState extends State<ShopPage> {
               ),
             ),
           ),
-          FixedImage(
-              top: 0,
-              left: 0,
-              child: Container(
-                child: Column(
-                  children: [
-                    Obx(() =>
-                        Text('Setting ${width.value} - ${selectedItem.value}')),
-                    Obx(() => Slider(
-                          value: width.value,
-                          onChanged: (value) {
-                            width.value = value;
-                            if (selectedItem.value != null) {
-                              selected.update((val) {
-                                var find = val?.firstWhereOrNull((element) =>
-                                    element.accessory_id ==
-                                    access[selectedItem.value!].accessory_id);
-                                if (find != null) {
-                                  find.width = value;
-                                }
-                              });
-                            }
-                          },
-                          min: 20,
-                          max: 200,
-                        )),
-                  ],
-                ),
-              )),
           FixedImage(
             top: 10,
             left: 750,
@@ -160,12 +120,15 @@ class _ShopPageState extends State<ShopPage> {
               ),
             ),
           ),
-          FixedImage(
-            top: 241,
-            left: 10,
-            child: Obx(
-              () => Stack(
-                children: buildPet(),
+          Positioned(
+            bottom: 20,
+            left: 20,
+            child: Container(
+              // color: Colors.red,
+              child: Transform.scale(
+                alignment: Alignment.bottomLeft,
+                scale: 1,
+                child: Obx(() => pet.value.bindedAccessories),
               ),
             ),
           ),
@@ -174,29 +137,122 @@ class _ShopPageState extends State<ShopPage> {
     );
   }
 
-  List<Widget> buildPet() {
-    List<Widget> items = [
-      Image.asset(
-        pet.value.getPetAvatar(),
-        width: 250,
-      ),
-    ];
-    items.addAll(selected.value
-        .map(
-          (data) => FixedImage(
-            key: Key(data.accessory_id ?? ''),
-            top: 0,
-            left: 0,
-            dragable: true,
-            child: Image.asset(
-              'assets/v2_images/${data.accessory_id}',
-              width: data.width,
-            ),
-          ),
-        )
-        .toList());
+  Obx buildItem(int index) {
+    return Obx(
+      () => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () async {
+          var accessory_id = access[index].accessory_id ?? '';
 
-    return items;
+          ///Nếu chưa mua
+          var checkHasPurchased = pet.value.accessories
+                  ?.any((p) => p.accessory_id == accessory_id) ==
+              true;
+
+          if (!checkHasPurchased) {
+            int coins = user.value.coin ?? 0;
+            if (coins >= 10) {
+              if (Global.loginResult?.token != null) {
+                ///Mua đồ
+                await API.pets.addAccessory(accessory_id: accessory_id);
+
+                ///Trừ tiền
+                await API.users.diffCoin(coin: coins - 10);
+              }
+              pet.update((val) {
+                val?.accessories ??= [];
+                val?.accessories
+                    ?.add(MyPetsAccessory(accessory_id: accessory_id));
+              });
+              user.update((val) {
+                val?.coin = coins - 10;
+              });
+              LocalStorage.setUser(user.value);
+            } else {
+              Global.showMessage('Not enough coins!',
+                  messageColor: Colors.redAccent);
+            }
+          } else {
+            var checkHasBind = pet.value.accessoriesBind
+                    ?.any((p) => p.accessory_id == accessory_id) ==
+                true;
+            if (Global.loginResult?.token != null) {
+              if (checkHasBind) {
+                await API.pets.accessoryUnbind(accessory_id: accessory_id);
+              } else {
+                await API.pets.accessoryBind(accessory_id: accessory_id);
+              }
+            }
+
+            pet.update((val) {
+              val?.accessoriesBind ??= [];
+              if (checkHasBind) {
+                val?.accessoriesBind
+                    ?.removeWhere((p) => p.accessory_id == accessory_id);
+              } else {
+                val?.accessoriesBind
+                    ?.add(MyPetsAccessory(accessory_id: accessory_id));
+              }
+            });
+          }
+          return;
+          // if (selected.value.contains(access[index])) {
+          //   if (selectedItem.value == index) {
+          //     selectedItem.value = null;
+          //   }
+          //   selected.update((val) {
+          //     val?.remove(access[index]);
+          //   });
+          // } else {
+          //   selectIndex(index);
+          //   selected.update((val) {
+          //     val?.add(access[index]);
+          //   });
+          // }
+        },
+        child: Stack(
+          children: [
+            Center(
+              child: Opacity(
+                opacity: pet.value.accessoriesBind?.any((p) =>
+                            p.accessory_id == access[index].accessory_id) ==
+                        true
+                    ? 0.5
+                    : 1,
+                child: Image.asset(
+                  'assets/v2_images/${access[index].accessory_id}',
+                ),
+              ),
+            ),
+            pet.value.accessories?.any(
+                        (p) => p.accessory_id == access[index].accessory_id) ==
+                    false
+                ? Positioned(
+                    bottom: 2,
+                    left: 2,
+                    child: Container(
+                      padding: EdgeInsets.only(right: 2, bottom: 2),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 5,
+                            // spreadRadius: 2
+                          ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        'assets/v2_images/home_shop.png',
+                        width: 15,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                : Container()
+          ],
+        ),
+      ),
+    );
   }
 
   Rx<double> width = Rx<double>(20);

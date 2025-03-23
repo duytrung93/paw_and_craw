@@ -256,7 +256,6 @@ class _ChooseAnimalNamePageState extends State<ChooseAnimalNamePage> {
   void showInput(BuildContext context) {
     Global.showInput(context,
             hintText: 'Input your pet name',
-            maxLength: 10,
             initialValue: petAdd.value.name ?? '')
         .then(
       (value) {

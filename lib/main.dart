@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:paw_and_craw/api/api.dart';
 import 'package:paw_and_craw/components/loading_dialog.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
+import 'package:paw_and_craw/functions/audio_utils.dart';
 import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/functions/local_storage.dart';
 import 'package:paw_and_craw/pages/home/home_page.dart';
@@ -27,11 +28,41 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
-    // TODO: implement initState
+    WidgetsBinding.instance.addObserver(this);
+    AudioUtils.playBgMusic();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        AudioUtils.playBgMusic();
+        break;
+      case AppLifecycleState.inactive:
+        AudioUtils.pauseBgMusic(); //If you want to pause music while inactive.
+        break;
+      case AppLifecycleState.paused:
+        AudioUtils.pauseBgMusic();
+        break;
+      case AppLifecycleState.detached:
+        AudioUtils.disposeBGMusic();
+        break;
+      case AppLifecycleState.hidden:
+        AudioUtils.pauseBgMusic();
+        break;
+    }
   }
 
   // This widget is the root of your application.

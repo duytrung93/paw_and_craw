@@ -34,4 +34,37 @@ class PetsProvider {
       uri: api('pets/update-age-stage'),
     ).call(params: {"age": age, "stage": stage});
   }
+
+  Future<List<MyPetsAccessory>> addAccessory({
+    required String accessory_id,
+  }) {
+    return GetDataAPI(
+      method: GetDataAPIMethod.post,
+      uri: api('pets/add-accessory'),
+      formatter: (json) =>
+          (json as List).map((e) => MyPetsAccessory.fromJson(e)).toList(),
+    ).call(params: {"accessory_id": accessory_id}).then((value) => value ?? []);
+  }
+
+  Future<List<MyPetsAccessory>> accessoryBind({
+    required String accessory_id,
+  }) {
+    return GetDataAPI(
+      method: GetDataAPIMethod.post,
+      uri: api('pets/accessory-bind'),
+      formatter: (json) =>
+          (json as List).map((e) => MyPetsAccessory.fromJson(e)).toList(),
+    ).call(params: {"accessory_id": accessory_id}).then((value) => value ?? []);
+  }
+
+  Future<List<MyPetsAccessory>> accessoryUnbind({
+    required String accessory_id,
+  }) {
+    return GetDataAPI(
+      method: GetDataAPIMethod.post,
+      uri: api('pets/accessory-unbind'),
+      formatter: (json) =>
+          (json as List).map((e) => MyPetsAccessory.fromJson(e)).toList(),
+    ).call(params: {"accessory_id": accessory_id}).then((value) => value ?? []);
+  }
 }

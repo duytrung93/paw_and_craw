@@ -251,7 +251,6 @@ class _PlayWithoutAccountPageState extends State<PlayWithoutAccountPage> {
   void showInput(BuildContext context) {
     Global.showInput(context,
             initialValue: txtName.text,
-            maxLength: 10,
             hintText: 'Input your name')
         .then(
       (value) {

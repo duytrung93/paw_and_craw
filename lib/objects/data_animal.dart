@@ -8,18 +8,22 @@ class DataAnimal {
   String id;
   String name;
   String info;
-  List<LevelsBean> questions;
-  List<String> videos;
-  List<PetAccessory> accessories;
+  late List<LevelsBean> questions;
+  late List<String> videos;
+  late List<PetAccessory> accessories;
 
   DataAnimal({
     this.id = '',
     this.name = '',
     this.info = '',
-    this.questions = const [],
-    this.videos = const [],
-    this.accessories = const [],
-  });
+    List<LevelsBean>? questions,
+    List<String>? videos,
+    List<PetAccessory>? accessories,
+  }) {
+    this.questions = questions ?? [];
+    this.videos = videos ?? [];
+    this.accessories = accessories ?? [];
+  }
 
   factory DataAnimal.fromJson(Map<String, dynamic> json) =>
       _$DataAnimalFromJson(json);
@@ -31,9 +35,15 @@ class DataAnimal {
 class LevelsBean {
   num level;
   String level_name;
-  List<QuestionsBean> questions;
+  late List<QuestionsBean> questions;
 
-  LevelsBean({this.level = 0, this.level_name = '', this.questions = const []});
+  LevelsBean({
+    this.level = 0,
+    this.level_name = '',
+    List<QuestionsBean>? questions,
+  }) {
+    this.questions = questions ?? [];
+  }
 
   factory LevelsBean.fromJson(Map<String, dynamic> json) =>
       _$LevelsBeanFromJson(json);
@@ -44,9 +54,11 @@ class LevelsBean {
 @JsonSerializable(explicitToJson: true)
 class QuestionsBean {
   String q;
-  List<AsBean> as;
+  late List<AsBean> as;
 
-  QuestionsBean({this.q = '', this.as = const []});
+  QuestionsBean({this.q = '', List<AsBean>? as}) {
+    this.as = as ?? [];
+  }
 
   factory QuestionsBean.fromJson(Map<String, dynamic> json) =>
       _$QuestionsBeanFromJson(json);

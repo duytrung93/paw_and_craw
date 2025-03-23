@@ -302,10 +302,11 @@ class _ShopConfigPageState extends State<ShopConfigPage> {
     items.add(Image.asset(
       selectedCog.value.url,
       width: 250,
+      fit: BoxFit.fill,
     ));
     if (selectedItem.value != null) {
       items.add(FixedImage(
-        key: Key(selectedCog.value.accessory_id ?? 'xx'),
+        key: Key('${selectedCog.value.url}_${selectedCog.value.accessory_id}'),
         top: selectedCog.value.y ?? 0,
         left: selectedCog.value.x ?? 0,
         dragable: true,
