@@ -121,13 +121,13 @@ class _ShopPageState extends State<ShopPage> {
             ),
           ),
           Positioned(
-            bottom: 20,
-            left: 20,
+            top: 183,
+            left: 82,
             child: Container(
               // color: Colors.red,
               child: Transform.scale(
                 alignment: Alignment.bottomLeft,
-                scale: 1,
+                scale: 1.3,
                 child: Obx(() => pet.value.bindedAccessories),
               ),
             ),
