@@ -53,25 +53,12 @@ class MyPets {
       });
 
   Widget get bindedAccessories {
-    var type = 0;
-    int x = age! % 10;
-    if (age! > 10) {
-      type = 3;
-    } else if (x == 0 && age! > 0) {
-      type = 3;
-    } else if (x < 3) {
-      type = 0;
-    } else if (x < 6) {
-      type = 1;
-    } else if (x < 9) {
-      type = 2;
-    } else {
-      type = 3;
-    }
+    var type = 3;
+    var level = 3;
     // print(accessoriesBind?.length);
     List<Widget> items = [
       Image.asset(
-        getPetAvatar(),
+        'assets/images/pet_${animalId}_${level}_$type.png',
         width: 250,
         fit: BoxFit.fill,
       ),
@@ -80,7 +67,7 @@ class MyPets {
     var accessories = accessoriesBind?.map((accessBind) {
           var selectedCog = dataAnimal.accessories.firstWhereOrNull((e) =>
               e.accessory_id == accessBind.accessory_id &&
-              e.animal_stage == getCurrentLevel?.level &&
+              e.animal_stage == level &&
               e.animal_stage_grow == type);
           print(selectedCog?.toJson());
           if (selectedCog == null) return Container();
@@ -105,6 +92,65 @@ class MyPets {
         [];
 
     items.addAll(accessories);
+
+    return Stack(
+      children: items,
+    );
+  }
+
+  Widget get bindedAccessoriesQuiz {
+    var type = 0;
+    int x = age! % 10;
+    if (age! > 10) {
+      type = 3;
+    } else if (x == 0 && age! > 0) {
+      type = 3;
+    } else if (x < 3) {
+      type = 0;
+    } else if (x < 6) {
+      type = 1;
+    } else if (x < 9) {
+      type = 2;
+    } else {
+      type = 3;
+    }
+    // print(accessoriesBind?.length);
+    List<Widget> items = [
+      Image.asset(
+        getPetAvatar(),
+        width: 250,
+        fit: BoxFit.fill,
+      ),
+    ];
+    List<String> check = [];
+    // var accessories = accessoriesBind?.map((accessBind) {
+    //       var selectedCog = dataAnimal.accessories.firstWhereOrNull((e) =>
+    //           e.accessory_id == accessBind.accessory_id &&
+    //           e.animal_stage == getCurrentLevel?.level &&
+    //           e.animal_stage_grow == type);
+    //       print(selectedCog?.toJson());
+    //       if (selectedCog == null) return Container();
+    //       if (check.contains('${selectedCog.accessory_id}')) {
+    //         return Container();
+    //       } else {
+    //         check.add('${selectedCog.accessory_id}');
+    //       }
+    //       return Positioned(
+    //         key: Key('${selectedCog.url}_${selectedCog.accessory_id}'),
+    //         top: selectedCog.y ?? 0,
+    //         left: selectedCog.x ?? 0,
+    //         child: Transform.rotate(
+    //           angle: pi * selectedCog.rotate! / 100,
+    //           child: Image.asset(
+    //             selectedCog.accessoryUrl,
+    //             width: selectedCog.width,
+    //           ),
+    //         ),
+    //       );
+    //     }).toList() ??
+    //     [];
+    //
+    // items.addAll(accessories);
 
     return Stack(
       children: items,

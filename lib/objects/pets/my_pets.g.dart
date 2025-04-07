@@ -13,13 +13,11 @@ MyPets _$MyPetsFromJson(Map<String, dynamic> json) => MyPets(
       age: (json['age'] as num?)?.toInt(),
       stage: json['stage'] as String?,
       accessories: (json['accessories'] as List<dynamic>?)
-              ?.map((e) => MyPetsAccessory.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+          ?.map((e) => MyPetsAccessory.fromJson(e as Map<String, dynamic>))
+          .toList(),
       accessoriesBind: (json['accessoriesBind'] as List<dynamic>?)
-              ?.map((e) => MyPetsAccessory.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+          ?.map((e) => MyPetsAccessory.fromJson(e as Map<String, dynamic>))
+          .toList(),
       id: json['id'] as String?,
       creationTime: json['creationTime'] as String?,
       concurrencyStamp: json['concurrencyStamp'] as String?,

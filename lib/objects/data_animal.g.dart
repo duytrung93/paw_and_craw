@@ -11,17 +11,13 @@ DataAnimal _$DataAnimalFromJson(Map<String, dynamic> json) => DataAnimal(
       name: json['name'] as String? ?? '',
       info: json['info'] as String? ?? '',
       questions: (json['questions'] as List<dynamic>?)
-              ?.map((e) => LevelsBean.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
-      videos: (json['videos'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+          ?.map((e) => LevelsBean.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      videos:
+          (json['videos'] as List<dynamic>?)?.map((e) => e as String).toList(),
       accessories: (json['accessories'] as List<dynamic>?)
-              ?.map((e) => PetAccessory.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+          ?.map((e) => PetAccessory.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$DataAnimalToJson(DataAnimal instance) =>
@@ -38,9 +34,8 @@ LevelsBean _$LevelsBeanFromJson(Map<String, dynamic> json) => LevelsBean(
       level: json['level'] as num? ?? 0,
       level_name: json['level_name'] as String? ?? '',
       questions: (json['questions'] as List<dynamic>?)
-              ?.map((e) => QuestionsBean.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+          ?.map((e) => QuestionsBean.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$LevelsBeanToJson(LevelsBean instance) =>
@@ -54,9 +49,8 @@ QuestionsBean _$QuestionsBeanFromJson(Map<String, dynamic> json) =>
     QuestionsBean(
       q: json['q'] as String? ?? '',
       as: (json['as'] as List<dynamic>?)
-              ?.map((e) => AsBean.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+          ?.map((e) => AsBean.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$QuestionsBeanToJson(QuestionsBean instance) =>

@@ -4,7 +4,7 @@ import 'package:paw_and_craw/objects/pets/my_pets.dart';
 import 'package:paw_and_craw/objects/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum StorageType { User, MyPet }
+enum StorageType { User, MyPet,Setting }
 
 class LocalStorage {
   static Future<SharedPreferences> get _prefs =>

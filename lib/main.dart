@@ -7,6 +7,7 @@ import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/audio_utils.dart';
 import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/functions/local_storage.dart';
+import 'package:paw_and_craw/objects/setting/setting.dart';
 import 'package:paw_and_craw/pages/home/home_page.dart';
 import 'package:paw_and_craw/pages/login/choose_animal_page.dart';
 import 'package:paw_and_craw/pages/login/welcome_page.dart';
@@ -18,7 +19,11 @@ void main() {
   WakelockPlus.enable();
 
   Global.init();
-  runApp(const MyApp());
+  SettingController settingController = SettingController(Setting());
+  Get.put(settingController);
+  settingController.loadData().then((value) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -29,10 +34,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  SettingController settingController = Get.find<SettingController>();
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    AudioUtils.playBgMusic();
+    if (settingController.data.value.music == true) {
+      AudioUtils.playBgMusic();
+    }
 
     super.initState();
   }
@@ -48,7 +56,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
     switch (state) {
       case AppLifecycleState.resumed:
-        AudioUtils.playBgMusic();
+        if (settingController.data.value.music == true) {
+          AudioUtils.playBgMusic();
+        }
+
         break;
       case AppLifecycleState.inactive:
         AudioUtils.pauseBgMusic(); //If you want to pause music while inactive.

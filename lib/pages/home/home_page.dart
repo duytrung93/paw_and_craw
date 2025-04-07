@@ -11,6 +11,7 @@ import 'package:paw_and_craw/objects/user.dart';
 import 'package:paw_and_craw/pages/about/about_page.dart';
 import 'package:paw_and_craw/pages/about/information_page.dart';
 import 'package:paw_and_craw/pages/about/profile_page.dart';
+import 'package:paw_and_craw/pages/about/setting_page.dart';
 import 'package:paw_and_craw/pages/donate/donate_page.dart';
 import 'package:paw_and_craw/pages/email/email_start_page.dart';
 import 'package:paw_and_craw/pages/follow_animals/follow_video_list_page.dart';
@@ -189,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
-                    Global.to(ProfilePage());
+                    Global.to(SettingPage());
                   },
                   child: Image.asset('assets/v2_images/home_setting.png',
                       width: 60),
