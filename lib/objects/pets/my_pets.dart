@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:paw_and_craw/api/api.dart';
 import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/objects/data_animal.dart';
@@ -57,8 +58,14 @@ class MyPets {
     var level = 3;
     // print(accessoriesBind?.length);
     List<Widget> items = [
-      Image.asset(
-        'assets/images/pet_${animalId}_${level}_$type.png',
+      // Image.asset(
+      //   'assets/images/pet_${animalId}_${level}_$type.png',
+      //   width: 250,
+      //   fit: BoxFit.fill,
+      // ),
+      Image.network(
+        api('Images/$animalId/adult_3.png')
+            .toString(), // 'assets/images/pet_${animalId}_${level}_$type.png',
         width: 250,
         fit: BoxFit.fill,
       ),
@@ -99,28 +106,39 @@ class MyPets {
   }
 
   Widget get bindedAccessoriesQuiz {
-    var type = 0;
-    int x = age! % 10;
-    if (age! > 10) {
-      type = 3;
-    } else if (x == 0 && age! > 0) {
-      type = 3;
-    } else if (x < 3) {
-      type = 0;
-    } else if (x < 6) {
-      type = 1;
-    } else if (x < 9) {
-      type = 2;
-    } else {
-      type = 3;
-    }
+    // var type = 0;
+    // int x = age! % 10;
+    // if (age! > 10) {
+    //   type = 3;
+    // } else if (x == 0 && age! > 0) {
+    //   type = 3;
+    // } else if (x < 3) {
+    //   type = 0;
+    // } else if (x < 6) {
+    //   type = 1;
+    // } else if (x < 9) {
+    //   type = 2;
+    // } else {
+    //   type = 3;
+    // }
     // print(accessoriesBind?.length);
     List<Widget> items = [
-      Image.asset(
-        getPetAvatar(),
-        width: 250,
-        fit: BoxFit.fill,
-      ),
+      // Image.asset(
+      //   getPetAvatar(),
+      //   width: 250,
+      //   fit: BoxFit.fill,
+      // ),
+      getPetAvatar() != null
+          ? Image.network(
+              getPetAvatar()!,
+              width: 250,
+              fit: BoxFit.fill,
+            )
+          : Image.asset(
+              'assets/images/image21.png',
+              width: 250,
+              fit: BoxFit.fill,
+            ),
     ];
     List<String> check = [];
     // var accessories = accessoriesBind?.map((accessBind) {
@@ -157,30 +175,34 @@ class MyPets {
     );
   }
 
-  String getPetAvatar() {
+  String? getPetAvatar() {
     var data = getCurrentLevel;
 
     if (data != null) {
-      var type = 0;
+      List<String> paths = [];
+
+      var type = '';
       int x = age! % 10;
       if (age! > 10) {
-        type = 3;
+        type = '3';
       } else if (x == 0 && age! > 0) {
-        type = 3;
+        type = '3';
       } else if (x < 3) {
-        type = 0;
+        type = '';
       } else if (x < 6) {
-        type = 1;
+        type = '1';
       } else if (x < 9) {
-        type = 2;
+        type = '2';
       } else {
-        type = 3;
+        type = '3';
       }
+      paths.add(data.level_name);
+      if (type.isNotEmpty) paths.add(type);
+      return api('Images/$animalId/${paths.join('_')}.png').toString();
 
-      return 'assets/images/pet_${animalId}_${data.level}_$type.png';
-    } else {
-      return 'assets/images/image71.png';
+      // return 'assets/images/pet_${animalId}_${data.level_name}_$type.png';
     }
+    return null;
   }
 }
 

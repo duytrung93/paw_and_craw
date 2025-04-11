@@ -282,8 +282,8 @@ class _ShopConfigPageState extends State<ShopConfigPage> {
               ),
             ),
           ),
-          FixedImage(
-            top: 241,
+          Positioned(
+            bottom: 10,
             left: 10,
             child: Obx(
               () => Stack(
@@ -298,8 +298,8 @@ class _ShopConfigPageState extends State<ShopConfigPage> {
 
   List<Widget> buildPet() {
     List<Widget> items = [];
-
-    items.add(Image.asset(
+    print(selectedCog.value.url);
+    items.add(Image.network(
       selectedCog.value.url,
       width: 250,
       fit: BoxFit.fill,
