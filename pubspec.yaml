@@ -37,7 +37,7 @@ dependencies:
   wakelock_plus: ^1.2.10
   gif: ^2.3.0
   url_launcher: ^6.3.1
-  youtube_player_flutter: ^9.1.1
+  youtube_player_iframe: ^5.2.1
   curved_text: ^0.2.0
   audioplayers: ^6.4.0
 

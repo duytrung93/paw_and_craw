@@ -8,9 +8,11 @@ import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/objects/pets/my_pets.dart';
 import 'package:paw_and_craw/objects/user.dart';
 import 'package:paw_and_craw/objects/youtube_metadata_fetch.dart';
+import 'package:paw_and_craw/pages/follow_animals/video_item.dart';
+import 'package:paw_and_craw/pages/follow_animals/view_video_page.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 class FollowVideoListPage extends StatefulWidget {
   const FollowVideoListPage({super.key});
@@ -71,7 +73,7 @@ class _VideoListState extends State<VideoList> {
         childAspectRatio: 1.5,
         padding: EdgeInsets.all(10),
         children: pet.value.dataAnimal.videos
-            .map((e) => VideoPlayer(video_id: e))
+            .map((e) => VideoItem(video_id: e))
             .toList(),
       ),
     );
@@ -83,180 +85,162 @@ class _VideoListState extends State<VideoList> {
   }
 }
 
-class VideoPlayer extends StatefulWidget {
-  final String video_id;
-  final bool isFullScreen;
-  final int startAt;
-  const VideoPlayer(
-      {super.key,
-      required this.video_id,
-      this.isFullScreen = false,
-      this.startAt = 0});
-
-  @override
-  State<VideoPlayer> createState() => _VideoPlayerState();
-}
-
-class _VideoPlayerState extends State<VideoPlayer> {
-  late YoutubePlayerController _controller;
-  late YoutubeMetadataFetch _videoMetaData;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    _controller = YoutubePlayerController(
-      initialVideoId: widget.video_id,
-      flags: YoutubePlayerFlags(
-        autoPlay: widget.isFullScreen,
-        startAt: widget.startAt,
-      ),
-    );
-
-    _videoMetaData = YoutubeMetadataFetch();
-    getMetadata().then(
-      (value) {
-        setState(() {
-          _videoMetaData = value;
-        });
-      },
-    );
-  }
-
-  Future<YoutubeMetadataFetch> getMetadata() async {
-    var response = await http.get(
-      Uri.parse('https://www.youtube.com/oembed').replace(
-        queryParameters: {
-          'url': 'https://www.youtube.com/watch?v=${widget.video_id}',
-          'format': 'json',
-        },
-      ),
-    );
-    var json = jsonDecode(response.body);
-    print(response.request?.url);
-    print(response.body);
-
-    return YoutubeMetadataFetch.fromJson(json);
-  }
-
-  @override
-  void deactivate() {
-    // Pauses video while navigating to next page.
-    _controller.pause();
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      // color: Colors.white,
-      decoration: BoxDecoration(
-        border: widget.isFullScreen
-            ? null
-            : Border.all(width: 1, color: Colors.grey),
-        borderRadius:
-            widget.isFullScreen ? BorderRadius.zero : BorderRadius.circular(20),
-      ),
-      child: ClipRRect(
-        borderRadius:
-            widget.isFullScreen ? BorderRadius.zero : BorderRadius.circular(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            widget.isFullScreen
-                ? YoutubePlayer(
-                    key: ObjectKey(widget.video_id),
-                    controller: _controller,
-                    actionsPadding: const EdgeInsets.only(left: 16.0),
-                    bottomActions: [
-                      CurrentPosition(),
-                      SizedBox(width: 10),
-                      ProgressBar(isExpanded: true),
-                      SizedBox(width: 10),
-                      RemainingDuration(),
-                      // FullScreenButton(),
-                      GestureDetector(
-                        onTap: () {
-                          if (widget.isFullScreen) {
-                            Navigator.pop(context);
-                          } else {
-                            Global.to(
-                              MainScaffold(
-                                child: VideoPlayer(
-                                  video_id: widget.video_id,
-                                  isFullScreen: true,
-                                  startAt: _controller.value.position.inSeconds,
-                                ),
-                              ),
-                            );
-                          }
-                          // _controller.toggleFullScreenMode();
-                          // launchUrlString(
-                          //     'https://www.youtube.com/watch?v=${widget.video_id}');
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.fullscreen,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      // FullScreenButton(),
-                    ],
-                  )
-                : Expanded(
-                    child: _videoMetaData.thumbnail_url != null
-                        ? GestureDetector(
-                            onTap: () {
-                              Global.to(
-                                MainScaffold(
-                                  child: VideoPlayer(
-                                    video_id: widget.video_id,
-                                    isFullScreen: true,
-                                    startAt:
-                                        _controller.value.position.inSeconds,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Image.network(
-                              _videoMetaData.thumbnail_url!,
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                  ),
-            widget.isFullScreen
-                ? Container()
-                : Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            _videoMetaData.title ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                // fontFamily: 'Shantell Sans',
-                                ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-          ],
-        ),
-      ),
-    );
-  }
-}
+// class VideoPlayer extends StatefulWidget {
+//   final String video_id;
+//   final bool isFullScreen;
+//   final int startAt;
+//   const VideoPlayer(
+//       {super.key,
+//       required this.video_id,
+//       this.isFullScreen = false,
+//       this.startAt = 0});
+//
+//   @override
+//   State<VideoPlayer> createState() => _VideoPlayerState();
+// }
+//
+// class _VideoPlayerState extends State<VideoPlayer> {
+//   late YoutubePlayerController _controller;
+//   late YoutubeMetadataFetch _videoMetaData;
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//
+//     super.initState();
+//     _controller = YoutubePlayerController(
+//       params: YoutubePlayerParams(
+//         showControls: true,
+//       ),
+//       // initialVideoId: widget.video_id,
+//       // flags: YoutubePlayerFlags(
+//       //   autoPlay: widget.isFullScreen,
+//       //   startAt: widget.startAt,
+//       //
+//       // ),
+//     );
+//
+//     _videoMetaData = YoutubeMetadataFetch();
+//
+//     if (!widget.isFullScreen) {
+//       getMetadata().then(
+//         (value) {
+//           setState(() {
+//             _videoMetaData = value;
+//           });
+//         },
+//       );
+//     }else{
+//       _controller.loadVideoById(videoId: widget.video_id);
+//     }
+//   }
+//
+//
+//
+//   @override
+//   void deactivate() {
+//     // Pauses video while navigating to next page.
+//     _controller.pauseVideo();
+//     super.deactivate();
+//   }
+//
+//   @override
+//   void dispose() {
+//     _controller.close();
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       // color: Colors.white,
+//       decoration: BoxDecoration(
+//         border: widget.isFullScreen
+//             ? null
+//             : Border.all(width: 1, color: Colors.grey),
+//         borderRadius:
+//             widget.isFullScreen ? BorderRadius.zero : BorderRadius.circular(20),
+//       ),
+//       child: ClipRRect(
+//         borderRadius:
+//             widget.isFullScreen ? BorderRadius.zero : BorderRadius.circular(20),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.stretch,
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             widget.isFullScreen
+//                 ? Expanded(
+//                     child: YoutubePlayer(
+//                       key: ObjectKey(widget.video_id),
+//                       controller: _controller,
+//                       // actionsPadding: const EdgeInsets.only(left: 16.0),
+//                       // bottomActions: [
+//                       //   CurrentPosition(),
+//                       //   SizedBox(width: 10),
+//                       //   ProgressBar(isExpanded: true),
+//                       //   SizedBox(width: 10),
+//                       //   RemainingDuration(),
+//                       //   // FullScreenButton(),
+//                       //   GestureDetector(
+//                       //     onTap: () {
+//                       //       if (widget.isFullScreen) {
+//                       //         Navigator.pop(context);
+//                       //       } else {
+//                       //         Global.to(
+//                       //             ViewVideoPage(video_id: widget.video_id));
+//                       //       }
+//                       //       // _controller.toggleFullScreenMode();
+//                       //       // launchUrlString(
+//                       //       //     'https://www.youtube.com/watch?v=${widget.video_id}');
+//                       //     },
+//                       //     child: Padding(
+//                       //       padding: EdgeInsets.all(8.0),
+//                       //       child: Icon(
+//                       //         Icons.fullscreen,
+//                       //         color: Colors.white,
+//                       //       ),
+//                       //     ),
+//                       //   ),
+//                       //   // FullScreenButton(),
+//                       // ],
+//                     ),
+//                   )
+//                 : Expanded(
+//                     child: _videoMetaData.thumbnail_url != null
+//                         ? GestureDetector(
+//                             onTap: () {
+//                               Global.to(
+//                                   ViewVideoPage(video_id: widget.video_id));
+//                             },
+//                             child: Image.network(
+//                               _videoMetaData.thumbnail_url!,
+//                               fit: BoxFit.cover,
+//                             ),
+//                           )
+//                         : Center(
+//                             child: CircularProgressIndicator(),
+//                           ),
+//                   ),
+//             widget.isFullScreen
+//                 ? Container()
+//                 : Row(
+//                     children: [
+//                       Expanded(
+//                         child: Padding(
+//                           padding: const EdgeInsets.all(10),
+//                           child: Text(
+//                             _videoMetaData.title ?? '',
+//                             overflow: TextOverflow.ellipsis,
+//                             style: TextStyle(
+//                                 // fontFamily: 'Shantell Sans',
+//                                 ),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   )
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
