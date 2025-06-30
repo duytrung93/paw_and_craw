@@ -44,7 +44,7 @@ class _VideoItemState extends State<VideoItem> {
               child: _videoMetaData.thumbnail_url != null
                   ? GestureDetector(
                       onTap: () {
-                        if (Platform.isWindows) {
+                        if (!Platform.isAndroid) {
                           launchUrlString(
                             'https://www.youtube.com/watch?v=${widget.video_id}',
                             mode: LaunchMode.inAppWebView,

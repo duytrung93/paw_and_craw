@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.paw_and_craw"
+    namespace = "com.bkfast.paws_and_claws_protector"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
