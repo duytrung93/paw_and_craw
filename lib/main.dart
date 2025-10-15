@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -12,6 +14,15 @@ import 'package:paw_and_craw/pages/home/home_page.dart';
 import 'package:paw_and_craw/pages/login/choose_animal_page.dart';
 import 'package:paw_and_craw/pages/login/welcome_page.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -197,6 +208,8 @@ class _RedirectPageState extends State<RedirectPage> {
         if (myPet != null) {
           Global.myPets = myPet;
           Get.offAllNamed('/HomePage');
+        } else {
+          Get.offAllNamed('/WelcomePage');
         }
       } else {
         var pet = await API.pets.get();

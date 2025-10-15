@@ -15,7 +15,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   Rx<User> get user => Get.find<UserController>().data;
   @override
   Widget build(BuildContext context) {
@@ -79,20 +78,22 @@ class _ProfilePageState extends State<ProfilePage> {
                   // spacing: 25,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(() => buildInput('Name', '${user.value.fullName}'),),
+                    Obx(
+                      () => buildInput('Name', '${user.value.fullName}'),
+                    ),
                     SizedBox(height: 25),
                     buildInput('Email/Phone', ''),
                     SizedBox(height: 25),
                     buildInput('Password', '...'),
                     SizedBox(height: 5),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Text(
-                        'Android  and IOS operating system',
-                        style: TextStyle(fontFamily: 'Gladiola', fontSize: 30),
-                      ),
-                    ),
-                    SizedBox(height: 10),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 30),
+                    //   child: Text(
+                    //     'Android  and IOS operating system',
+                    //     style: TextStyle(fontFamily: 'Gladiola', fontSize: 30),
+                    //   ),
+                    // ),
+                    SizedBox(height: 50),
                     Text(
                       'Delete account',
                       style: TextStyle(

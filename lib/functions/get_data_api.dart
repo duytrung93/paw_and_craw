@@ -65,6 +65,7 @@ class GetDataAPI<T> {
                 uri,
                 headers: headers,
                 body: utf8.encode(jsonEncode(params)),
+                //body: params,
               );
               break;
             case GetDataAPIMethod.put:
@@ -156,6 +157,14 @@ class GetDataAPI<T> {
         // }
 
         // throw Exception('Đã có lỗi sảy ra');
+      } on http.ClientException catch (e) {
+        Get.dialog(AlertDialog(
+          content: Text(
+            e.message,
+            style: TextStyle(color: Colors.redAccent),
+          ),
+        ));
+        throw e.message;
       } catch (e) {
         // Utilitys.showMessage(
         //   e.toString().replaceAll('Exception: ', ''),

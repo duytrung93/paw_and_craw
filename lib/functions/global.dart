@@ -429,6 +429,18 @@ class Global {
       () async {
         TextEditingController txtName =
             TextEditingController(text: initialValue);
+        print(Global.targetPlatform.width);
+        print(MediaQuery.of(context).size.width);
+        var input_width = MediaQuery.of(context).size.width >
+                MediaQuery.of(context).size.height
+            ? Global.targetPlatform.width *
+                (MediaQuery.of(context).size.height /
+                    Global.targetPlatform.height)
+            : MediaQuery.of(context).size.width;
+        if (input_width > MediaQuery.of(context).size.width) {
+          input_width = MediaQuery.of(context).size.width;
+        }
+        print('input_width: $input_width');
         await showModalBottomSheet(
           context: context,
           isScrollControlled: true,
@@ -442,9 +454,7 @@ class Global {
                   children: [
                     Expanded(child: Container()),
                     Container(
-                      width: Global.targetPlatform.width *
-                          (MediaQuery.of(context).size.height /
-                              Global.targetPlatform.height),
+                      width: input_width,
                       color: Colors.white,
                       child: Stack(
                         children: <Widget>[
@@ -480,9 +490,11 @@ class Global {
                               onTap: () {
                                 Navigator.pop(context);
                               },
-                              child: Icon(
-                                Icons.arrow_forward,
-                                color: Colors.blueAccent,
+                              child: FittedBox(
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                  color: Colors.blueAccent,
+                                ),
                               ),
                             ),
                           ),
