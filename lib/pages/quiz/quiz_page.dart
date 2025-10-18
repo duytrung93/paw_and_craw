@@ -282,7 +282,11 @@ class _QuizPageState extends State<QuizPage> {
           }
           if (user.value.token != null) {
             await Future.wait([
-              API.pets.updateAgeStage(age: newAge, stage: newStage),
+              API.pets.updateAgeStage(
+                age: newAge,
+                stage: newStage,
+                animal_id: '${pet.value.animalId}',
+              ),
               API.users.addCoin(coin: 5),
             ]);
           }

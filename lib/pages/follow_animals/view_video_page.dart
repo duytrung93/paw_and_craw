@@ -14,21 +14,24 @@ class ViewVideoPage extends StatefulWidget {
 class _ViewVideoPageState extends State<ViewVideoPage> {
   late YoutubePlayerController _controller;
 
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    _controller = YoutubePlayerController(
-      params: YoutubePlayerParams(
-        showControls: true,
-      ),
-    );
-    _controller.loadVideoById(videoId: widget.video_id);
+    // _controller = YoutubePlayerController(
+    //   params: YoutubePlayerParams(
+    //     showControls: true,
+    //   ),
+    // );
+    // _controller.loadVideoById(videoId: widget.video_id);
   }
 
   @override
   Widget build(BuildContext context) {
+
+
     return MainScaffold(
       child: Stack(
         fit: StackFit.expand,

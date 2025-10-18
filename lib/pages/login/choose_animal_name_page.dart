@@ -219,6 +219,7 @@ class _ChooseAnimalNamePageState extends State<ChooseAnimalNamePage> {
                         ///playWithoutAccount
                         if (user.value.token != null) {
                           API.pets.add(info: petAdd.value).then((value) {
+                            LocalStorage.setData(StorageType.ActiveAnimal, '${petAdd.value.animalId}');
                             Get.offAllNamed('/');
                           });
                         } else {

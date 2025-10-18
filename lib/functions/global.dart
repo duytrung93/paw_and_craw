@@ -376,7 +376,8 @@ class Global {
     loadingController = Get.put(LoadingController(), permanent: true);
   }
 
-  static Future logout() {
+  static Future logout() async {
+    await LocalStorage.setData(StorageType.ActiveAnimal, null);
     return LocalStorage.setUser(null).then(
       (value) {
         return Get.offAllNamed('/');

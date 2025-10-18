@@ -4,7 +4,7 @@ import 'package:paw_and_craw/objects/pets/my_pets.dart';
 import 'package:paw_and_craw/objects/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum StorageType { User, MyPet,Setting }
+enum StorageType { User, MyPet, Setting, ActiveAnimal }
 
 class LocalStorage {
   static Future<SharedPreferences> get _prefs =>
@@ -53,10 +53,14 @@ class LocalStorage {
     });
   }
 
-  static Future<bool?> setData(StorageType key, String value) {
+  static Future<bool?> setData(StorageType key, String? value) {
     print('$key');
     return _prefs.then((p) {
-      return p.setString('$key', value);
+      if (value == null) {
+        return p.remove('$key');
+      }else {
+        return p.setString('$key', value);
+      }
     });
   }
 }

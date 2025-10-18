@@ -212,10 +212,16 @@ class _RedirectPageState extends State<RedirectPage> {
           Get.offAllNamed('/WelcomePage');
         }
       } else {
-        var pet = await API.pets.get();
-        if (pet != null) {
-          Global.myPets = pet;
-          Get.offAllNamed('/HomePage');
+        var activeAnimal = await LocalStorage.getData(StorageType.ActiveAnimal);
+        print('activeAnimal: $activeAnimal');
+        if (activeAnimal != null) {
+          var pet = await API.pets.get(animal_id: activeAnimal);
+          if (pet != null) {
+            Global.myPets = pet;
+            Get.offAllNamed('/HomePage');
+          } else {
+            Get.offAllNamed('/ChooseAnimalPage');
+          }
         } else {
           Get.offAllNamed('/ChooseAnimalPage');
         }

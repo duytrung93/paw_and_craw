@@ -6,12 +6,12 @@ import 'package:paw_and_craw/objects/user.dart';
 import 'package:paw_and_craw/objects/users/users_register.dart';
 
 class PetsProvider {
-  Future<MyPets?> get() {
+  Future<MyPets?> get({required String animal_id}) {
     return GetDataAPI(
       method: GetDataAPIMethod.get,
       uri: api('pets'),
       formatter: (json) => MyPets.fromJson(json),
-    ).call();
+    ).call(params: {'animal_id': animal_id});
   }
 
   Future<dynamic> add({required PetAdd info}) {
@@ -25,46 +25,44 @@ class PetsProvider {
     );
   }
 
-  Future<dynamic> updateAgeStage({
-    required num age,
-    required String stage,
-  }) {
+  Future<dynamic> updateAgeStage(
+      {required num age, required String stage, required String animal_id}) {
     return GetDataAPI(
       method: GetDataAPIMethod.post,
       uri: api('pets/update-age-stage'),
-    ).call(params: {"age": age, "stage": stage});
+    ).call(params: {"age": age, "stage": stage, 'animal_id': animal_id});
   }
 
-  Future<List<MyPetsAccessory>> addAccessory({
-    required String accessory_id,
-  }) {
+  Future<List<MyPetsAccessory>> addAccessory(
+      {required String accessory_id, required String animal_id}) {
     return GetDataAPI(
       method: GetDataAPIMethod.post,
       uri: api('pets/add-accessory'),
       formatter: (json) =>
           (json as List).map((e) => MyPetsAccessory.fromJson(e)).toList(),
-    ).call(params: {"accessory_id": accessory_id}).then((value) => value ?? []);
+    ).call(params: {"accessory_id": accessory_id, 'animal_id': animal_id}).then(
+        (value) => value ?? []);
   }
 
-  Future<List<MyPetsAccessory>> accessoryBind({
-    required String accessory_id,
-  }) {
+  Future<List<MyPetsAccessory>> accessoryBind(
+      {required String accessory_id, required String animal_id}) {
     return GetDataAPI(
       method: GetDataAPIMethod.post,
       uri: api('pets/accessory-bind'),
       formatter: (json) =>
           (json as List).map((e) => MyPetsAccessory.fromJson(e)).toList(),
-    ).call(params: {"accessory_id": accessory_id}).then((value) => value ?? []);
+    ).call(params: {"accessory_id": accessory_id, 'animal_id': animal_id}).then(
+        (value) => value ?? []);
   }
 
-  Future<List<MyPetsAccessory>> accessoryUnbind({
-    required String accessory_id,
-  }) {
+  Future<List<MyPetsAccessory>> accessoryUnbind(
+      {required String accessory_id, required String animal_id}) {
     return GetDataAPI(
       method: GetDataAPIMethod.post,
       uri: api('pets/accessory-unbind'),
       formatter: (json) =>
           (json as List).map((e) => MyPetsAccessory.fromJson(e)).toList(),
-    ).call(params: {"accessory_id": accessory_id}).then((value) => value ?? []);
+    ).call(params: {"accessory_id": accessory_id, 'animal_id': animal_id}).then(
+        (value) => value ?? []);
   }
 }

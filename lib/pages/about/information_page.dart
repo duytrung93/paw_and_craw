@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/objects/pets/my_pets.dart';
+import 'package:paw_and_craw/pages/follow_animals/video_item.dart';
+import 'package:paw_and_craw/pages/follow_animals/view_video_page.dart';
 
 class InformationPage extends StatefulWidget {
   const InformationPage({super.key});
@@ -61,18 +63,27 @@ class _InformationPageState extends State<InformationPage> {
                 ),
                 FixedImage(
                   top: 161,
-                  left: 264,
+                  left: 0,
                   child: Obx(
-                    () => BorderedText(
-                      strokeWidth: 5,
-                      strokeColor: Color(0xffffe865),
-                      child: Text(
-                        pet.value.dataAnimal.name,
-                        style: TextStyle(
-                          fontFamily: 'Noot',
-                          fontSize: 80,
-                          color: Color(0xffdd00ae),
-                        ),
+                    () => SizedBox(
+                      // color: Colors.red,
+                      width: 770,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BorderedText(
+                            strokeWidth: 5,
+                            strokeColor: Color(0xffffe865),
+                            child: Text(
+                              pet.value.dataAnimal.name,
+                              style: TextStyle(
+                                fontFamily: 'Noot',
+                                fontSize: 80,
+                                color: Color(0xffdd00ae),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -84,17 +95,33 @@ class _InformationPageState extends State<InformationPage> {
                     width: 650,
                     height: 200,
                     // color: Colors.red,
-                    child: SingleChildScrollView(
-                      child: Obx(() => Text(
-                            pet.value.dataAnimal.info,
-                            style: TextStyle(
-                              // fontFamily: 'Noot',
-                              fontSize: 23,
-                              height: 1.3,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Obx(() => Text(
+                                  pet.value.dataAnimal.info,
+                                  // textAlign: TextAlign.justify,
+                                  style: TextStyle(
+                                    // fontFamily: 'Noot',
+                                    fontSize: 23,
+                                    height: 1.3,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+
+                                  ),
+                                )),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 200,
+                          width: 200,
+                          child: VideoItem(
+                            video_id: pet.value.dataAnimal.videos[0],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

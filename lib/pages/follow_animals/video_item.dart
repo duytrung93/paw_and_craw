@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/objects/youtube_metadata_fetch.dart';
 import 'package:http/http.dart' as http;
@@ -53,9 +54,27 @@ class _VideoItemState extends State<VideoItem> {
                         }
                         Global.to(ViewVideoPage(video_id: widget.video_id));
                       },
-                      child: Image.network(
-                        _videoMetaData.thumbnail_url!,
-                        fit: BoxFit.cover,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.network(
+                            _videoMetaData.thumbnail_url!,
+                            fit: BoxFit.cover,
+                          ),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Center(
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white.withAlpha(100),
+
+                                child: Icon(Icons.play_arrow, color: Colors.black,),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     )
                   : Center(

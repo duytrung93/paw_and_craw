@@ -62,40 +62,58 @@ class _HomePageState extends State<HomePage> {
               spacing: 15,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(30),
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    color: Color(0xffa4ae2d),
-                    width: 250,
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(40),
-                          child: Image.asset(
-                            'assets/v2_images/home_avatar.jpg',
-                            width: 50,
-                          ),
-                        ),
-                        Expanded(
-                          child: Obx(
-                            () => Opacity(
-                              opacity: 0.67,
-                              child: Text(
-                                petController.data.value.name ?? '',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontFamily: 'LobsterTwo',
-                                    color: Colors.white,
-                                    fontSize: 20),
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Container(
+                        padding: EdgeInsets.all(5),
+                        color: Color(0xffa4ae2d),
+                        width: 250,
+                        child: Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Get.offAllNamed('ChooseAnimalPage');
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(40),
+                                child: Image.asset(
+                                  'assets/v2_images/home_avatar.jpg',
+                                  width: 50,
+                                ),
                               ),
                             ),
-                          ),
+                            Expanded(
+                              child: Obx(
+                                () => Opacity(
+                                  opacity: 0.67,
+                                  child: Text(
+                                    petController.data.value.name ?? '',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontFamily: 'LobsterTwo',
+                                        color: Colors.white,
+                                        fontSize: 20),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 50),
+                          ],
                         ),
-                        SizedBox(width: 50),
-                      ],
+                      ),
                     ),
-                  ),
+                    FixedImage(
+                      top: 40,
+                      left: 40,
+                      // dragable: true,
+                      child: Image.asset(
+                        'assets/images/icons8-data-transfer-50.png',
+                        width: 18,
+                      ),
+                    )
+                  ],
                 ),
                 GestureDetector(
                   onTap: () {

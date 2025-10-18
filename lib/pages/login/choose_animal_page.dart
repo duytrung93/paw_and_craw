@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gif/gif.dart';
+import 'package:paw_and_craw/api/api.dart';
 import 'package:paw_and_craw/components/fixed_image.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
+import 'package:paw_and_craw/functions/local_storage.dart';
 import 'package:paw_and_craw/objects/pet_add.dart';
 import 'package:paw_and_craw/objects/user.dart';
 import 'package:paw_and_craw/pages/login/choose_animal_name_page.dart';
@@ -193,10 +195,20 @@ class _ChooseAnimalPageState extends State<ChooseAnimalPage> {
     );
   }
 
-  void pickAnimal(String i) {
+  Future<void> pickAnimal(String i) async {
+    if (Global.loginResult != null && Global.loginResult?.token != null) {
+      var pet = await API.pets.get(animal_id: i);
+      if(pet != null){
+        LocalStorage.setData(StorageType.ActiveAnimal, i);
+        Get.offAllNamed('/');
+        return;
+      }
+    }
+
     petAddController.data.update((val) {
       val?.animalId = i;
     });
+
     Global.to(ChooseAnimalNamePage());
   }
 }

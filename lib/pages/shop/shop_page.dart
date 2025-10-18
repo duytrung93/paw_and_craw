@@ -154,7 +154,9 @@ class _ShopPageState extends State<ShopPage> {
             if (coins >= 10) {
               if (Global.loginResult?.token != null) {
                 ///Mua đồ
-                await API.pets.addAccessory(accessory_id: accessory_id);
+                await API.pets.addAccessory(
+                    accessory_id: accessory_id,
+                    animal_id: '${pet.value.animalId}');
 
                 ///Trừ tiền
                 await API.users.diffCoin(coin: coins - 10);
@@ -178,9 +180,13 @@ class _ShopPageState extends State<ShopPage> {
                 true;
             if (Global.loginResult?.token != null) {
               if (checkHasBind) {
-                await API.pets.accessoryUnbind(accessory_id: accessory_id);
+                await API.pets.accessoryUnbind(
+                    accessory_id: accessory_id,
+                    animal_id: '${pet.value.animalId}');
               } else {
-                await API.pets.accessoryBind(accessory_id: accessory_id);
+                await API.pets.accessoryBind(
+                    accessory_id: accessory_id,
+                    animal_id: '${pet.value.animalId}');
               }
             }
 
