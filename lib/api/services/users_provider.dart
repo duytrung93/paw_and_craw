@@ -41,4 +41,11 @@ class UsersProvider {
       uri: api('users/diff-coin'),
     ).call(params: {'coin': coin});
   }
+
+  Future<dynamic> delete() {
+    return GetDataAPI(
+      method: GetDataAPIMethod.delete,
+      uri: api('users/delete'),
+    ).call();
+  }
 }

@@ -2,10 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paw_and_craw/api/api.dart';
 import 'package:paw_and_craw/components/fixed_image.dart';
+import 'package:paw_and_craw/components/loading_dialog.dart';
 import 'package:paw_and_craw/components/main_scaffold.dart';
 import 'package:paw_and_craw/functions/global.dart';
 import 'package:paw_and_craw/objects/user.dart';
+import 'package:paw_and_craw/pages/login/make_account_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -94,27 +97,37 @@ class _ProfilePageState extends State<ProfilePage> {
                     //   ),
                     // ),
                     SizedBox(height: 50),
-                    Text(
-                      'Delete account',
-                      style: TextStyle(
-                        fontFamily: 'Arturo',
-                        fontSize: 30,
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
-                        color: Color(0xffff3131),
+                    InkWell(
+                      onTap: () {
+                        handleDeleteAccount();
+                      },
+                      child: Text(
+                        'Delete account',
+                        style: TextStyle(
+                          fontFamily: 'Arturo',
+                          fontSize: 30,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                          color: Color(0xffff3131),
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),
-                    Text(
-                      'Make a new account',
-                      style: TextStyle(
-                        fontFamily: 'Arturo',
-                        fontSize: 30,
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
-                        color: Color(0xff1d76b7),
+                    InkWell(
+                      onTap: () {
+                        handleMakeNewAccount();
+                      },
+                      child: Text(
+                        'Make a new account',
+                        style: TextStyle(
+                          fontFamily: 'Arturo',
+                          fontSize: 30,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                          color: Color(0xff1d76b7),
+                        ),
                       ),
                     ),
                   ],
@@ -211,5 +224,53 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
     );
+  }
+
+  void handleDeleteAccount() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Delete Account',
+              style: TextStyle(fontFamily: 'Arturo', fontSize: 40),
+            ),
+            content: Text(
+              'Are you sure you want to delete your account? This action cannot be undone.',
+              style: TextStyle(fontFamily: 'Arturo', fontSize: 30),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(fontFamily: 'Arturo', fontSize: 30),
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  await API.users.delete();
+                  Global.logout(); // Log out the user after deletion
+                },
+                child: Text(
+                  'Delete',
+                  style: TextStyle(
+                      fontFamily: 'Arturo', fontSize: 30, color: Colors.red),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  Future<void> handleMakeNewAccount() async {
+    await Global.logout();
+    //Get.back();
+    Global.to(MakeAccountPage(
+      type: UserType.newAccount,
+    ));
   }
 }

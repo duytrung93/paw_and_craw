@@ -262,6 +262,21 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
+          FixedImage(
+            top: 0,
+            left: 760.0,
+            // dragable: true,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              iconSize: 20,
+              icon: Image.asset(
+                'assets/images/image87.png',
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
         ],
       ),
     );
